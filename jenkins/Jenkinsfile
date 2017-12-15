@@ -3,7 +3,7 @@ def branch = env.JOB_NAME.split("_")[1]
 def slaves = ['Linux', 'Windows', 'Macos']
 def pyvers = ['py36', 'py27', 'py34']
 def modules = ["conan.test_regression"]
-def numcores = "--num_cores=3"
+def numcores = "3"
 
 
 modules = "\"" + modules.join(" ") + "\""
