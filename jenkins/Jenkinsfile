@@ -29,14 +29,14 @@ for (x in slaves) {
 
                     if(slave == "Linux"){
                         docker.image('lasote/conantests').inside("-e CONAN_USER_HOME=${WORKSPACE}") {
-                            sh(script: "python ${runner} ${module} ${pyver} ${branch} /tmp/${workdir} --num_cores=${numcores}")
+                            sh(script: "python ${runner} ${modules} ${pyver} ${branch} /tmp/${workdir} --num_cores=${numcores}")
                         }
                     }
                     else if(slave == "Windows"){
                         try{
                           workdir = "${commit}\\${pyver}"
                           withEnv(["CONAN_TEST_FOLDER=${win_tmp_base}${workdir}"]){
-                            bat(script: "python ${runner} ${module} ${pyver} ${branch} \"${win_tmp_base}${workdir}\" --num_cores=${numcores}")
+                            bat(script: "python ${runner} ${modules} ${pyver} ${branch} \"${win_tmp_base}${workdir}\" --num_cores=${numcores}")
                           }
                         }
                         finally{
@@ -46,7 +46,7 @@ for (x in slaves) {
                     else if(slave == "Macos"){
                         try{
                           withEnv(['PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin']) {
-                              sh(script: "python ${runner} ${module} ${pyver} ${branch} /tmp/${workdir} --num_cores=${numcores}")
+                              sh(script: "python ${runner} ${modules} ${pyver} ${branch} /tmp/${workdir} --num_cores=${numcores}")
                           }
                         }
                         finally{
