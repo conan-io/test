@@ -1,4 +1,7 @@
 import os
+
+import shutil
+
 from conf import winpylocation, linuxpylocation, macpylocation, environment_append, get_environ
 import platform
 
@@ -9,6 +12,8 @@ pylocations = {"Windows": winpylocation,
 
 def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
 
+    shutil.rmtree(tmp_folder, ignore_errors=True)
+    os.mkdir(tmp_folder)
     venv_dest = os.path.join(tmp_folder, "venv")
     if not os.path.exists(venv_dest):
         os.makedirs(venv_dest)
@@ -29,8 +34,9 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
     command = "virtualenv --python \"{pyenv}\" \"{venv_dest}\" && " \
               "{source_cmd} \"{venv_exe}\" && " \
               "{pip_installs} && " \
-              "git clone --depth 1 https://github.com/conan-io/conan.git -b {branch} conan_p && " \
-              "cd conan_p && python setup.py install && cd .. && " \
+              "cd {tmp_folder} && git clone --depth 1 " \
+              "https://github.com/conan-io/conan.git -b {branch} conan_p && " \
+              "cd conan_p && python setup.py install && cd {cwd} && " \
               "conan --version && conan --help && " \
               "nosetests {module_path} --verbosity=2 " \
               "{multiprocess} ".format(
@@ -38,10 +44,12 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
                                        "pyenv": pyenv,
                                        "branch": conan_branch,
                                        "venv_dest": venv_dest,
+                                       "tmp_folder": tmp_folder,
                                        "venv_exe": venv_exe,
                                        "source_cmd": source_cmd,
                                        "multiprocess": multiprocess,
-                                       "pip_installs": pip_installs})
+                                       "pip_installs": pip_installs,
+                                       "cwd": os.getcwd()})
 
     env = get_environ(tmp_folder)
     env["CONAN_LOGGING_LEVEL"] = "50" if platform.system() == "Darwin" else "50"
