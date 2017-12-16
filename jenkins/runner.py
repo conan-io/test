@@ -1,5 +1,4 @@
 import os
-
 from conf import winpylocation, linuxpylocation, macpylocation, environment_append, get_environ
 import platform
 
@@ -30,8 +29,8 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
     command = "virtualenv --python \"{pyenv}\" \"{venv_dest}\" && " \
               "{source_cmd} \"{venv_exe}\" && " \
               "{pip_installs} && " \
-              "git clone --depth 1 https://github.com/conan-io/conan.git -b {branch} conan_p &&" \
-              "cd conan_p && python setup.py install && cd .. && rm -rf conan_p && " \
+              "git clone --depth 1 https://github.com/conan-io/conan.git -b {branch} conan_p && " \
+              "cd conan_p && python setup.py install && cd .. && " \
               "conan --version && conan --help && " \
               "nosetests {module_path} --verbosity=2 " \
               "{multiprocess} ".format(
