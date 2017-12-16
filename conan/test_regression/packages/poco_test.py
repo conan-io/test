@@ -16,7 +16,6 @@ class PocoTest(BaseExeTest):
         run("git clone --depth 1 %s -b %s ." % (self.librepo, self.branch))
         run("conan create conan/testing")
 
-    # UNCOMMENT WHEN PACKAGES FROM GCC MAJORS ARE READY!
-    #def test_install_remote(self):
-    #    run("git clone --depth 1 %s -b %s ." % (self.librepo, self.branch))
-    #    run("conan test test_package %s" % self.libref)
+    def test_install_remote(self):
+        run("git clone --depth 1 %s -b %s ." % (self.librepo, self.branch))
+        run("conan test test_package %s" % self.libref)
