@@ -12,8 +12,6 @@ pylocations = {"Windows": winpylocation,
 
 def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
 
-    shutil.rmtree(tmp_folder, ignore_errors=True)
-    os.mkdir(tmp_folder)
     venv_dest = os.path.join(tmp_folder, "venv")
     if not os.path.exists(venv_dest):
         os.makedirs(venv_dest)
