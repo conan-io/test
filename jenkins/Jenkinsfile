@@ -24,7 +24,7 @@ for (x in slaves) {
             node(slave) {
                 stage("${slave} - ${pyver}"){
                     def vars = checkout scm
-                    commit = vars["GIT_COMMIT"].substring(0, 4)
+                    commit = env.BUILD_NUMBER
                     def workdir = "test/${commit}/${pyver}"
 
                     if(slave == "Linux"){
