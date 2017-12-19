@@ -18,8 +18,7 @@ linuxpylocation = {"py27": "/usr/bin/python2.7",
 
 def get_environ(tmp_path):
     if platform.system() == "Windows":
-        return {"CONAN_BASH_PATH": "c:/tools/msys64/usr/bin/bash",
-                "CONAN_USER_HOME_SHORT": os.path.join(tmp_path, ".conan")}
+        return {"CONAN_USER_HOME_SHORT": os.path.join(tmp_path, ".conan")}
     return {}
 
 

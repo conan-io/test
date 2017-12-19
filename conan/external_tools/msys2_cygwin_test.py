@@ -105,8 +105,8 @@ class MSys2CygwinTestBuildRequiresOrderAppliedPath(BaseExeTest):
     def test_base(self, subsystem_require):
         if platform.system() != "Windows":
             raise nose.SkipTest('Only windows test')
-        files = cpp_hello_conan_files(name="Hello", version="0.1", deps=None, language=0, static=True,
-                                      use_cmake=False)
+        files = cpp_hello_conan_files(name="Hello", version="0.1", deps=None, language=0,
+                                      static=True, use_cmake=False)
         files["myprofile"] = """
 [build_requires]
 mingw_installer/1.0@conan/stable

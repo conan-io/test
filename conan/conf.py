@@ -15,13 +15,16 @@ CONAN_CYGWIN_PATH = os.getenv("CONAN_CYGWIN_PATH", "C:/cygwin64/bin")
 def mingw_in_path():
     return _in_path_win(CONAN_MINGW_PATH)
 
+
 @contextmanager
 def msys2_in_path():
     return _in_path_win(CONAN_MSYS2_PATH)
 
+
 @contextmanager
 def cygwin_in_path():
     return _in_path_win(CONAN_CYGWIN_PATH)
+
 
 def _in_path_win(path):
     if platform.system() != "Windows":
