@@ -1,5 +1,7 @@
 # IDES stuff
 .idea
+.project
+.pydevproject
 
 
 # Byte-compiled / optimized / DLL files
