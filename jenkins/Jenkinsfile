@@ -1,5 +1,5 @@
 
-def modules = ["conan.test_regression"]
+def modules = ["conan"]
 def slaves = ['Linux', 'Windows', 'Macos']
 def pyvers = ['py36', 'py27', 'py34']
 def numcores = "1"
