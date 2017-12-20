@@ -8,6 +8,7 @@ def branch = env.JOB_NAME.split("_")[1]
 modules = "\"" + modules.join(" ") + "\""
 
 def win_tmp_base = "D:\\J\\t2\\"
+def rest_tmp_base = "/tmp/"
 def runner = "jenkins/runner.py"
 
 
@@ -20,34 +21,35 @@ try{
             builders["${slave} - ${pyver}"] = {
                 node(slave) {
                     stage("${slave} - ${pyver}"){
-                        def vars = checkout scm
+                        step ([$class: 'WsCleanup'])
+                        checkout scm
                         def bn = env.BUILD_NUMBER
-                        def workdir = "test/${bn}/${pyver}"
+                        def base_dir = (slave == "Windows") ? win_tmp_base : rest_tmp_base
+                        def workdir = "${base_dir}${bn}/${pyver}"
 
                         if(slave == "Linux"){
                             docker.image('lasote/conantests').inside("-e CONAN_USER_HOME=${WORKSPACE}") {
-                                sh(script: "python ${runner} ${modules} ${pyver} ${branch} /tmp/${workdir} --num_cores=${numcores}")
+                                sh(script: "python ${runner} ${modules} ${pyver} ${branch} ${workdir} --num_cores=${numcores}")
                             }
                         }
                         else if(slave == "Windows"){
                             try{
-                              workdir = "${bn}\\${pyver}"
-                              withEnv(["CONAN_TEST_FOLDER=${win_tmp_base}${workdir}"]){
-                                bat(script: "python ${runner} ${modules} ${pyver} ${branch} \"${win_tmp_base}${workdir}\" --num_cores=${numcores}")
+                              withEnv(["CONAN_TEST_FOLDER=${workdir}"]){
+                                bat(script: "python ${runner} ${modules} ${pyver} ${branch} \"${workdir}\" --num_cores=${numcores}")
                               }
                             }
                             finally{
-                              bat(script: "rd /s /q \"${win_tmp_base}${workdir}\"")
+                              bat(script: "rd /s /q \"${workdir}\"")
                             }
                         }
                         else if(slave == "Macos"){
                             try{
                               withEnv(['PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin']) {
-                                  sh(script: "python ${runner} ${modules} ${pyver} ${branch} /tmp/${workdir} --num_cores=${numcores}")
+                                  sh(script: "python ${runner} ${modules} ${pyver} ${branch} ${workdir} --num_cores=${numcores}")
                               }
                             }
                             finally{
-                              sh(script: "rm -rf /tmp/${workdir}")
+                              sh(script: "rm -rf ${workdir}")
                             }
                         }
                     }
