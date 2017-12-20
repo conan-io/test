@@ -4,7 +4,7 @@ from conan.test_regression.utils.base_exe import BaseExeTest, run
 class PocoTest(BaseExeTest):
 
     libref = "Poco/1.8.0.1@pocoproject/stable"
-    librepo = "https://github.com/pocoproject/conan-poco.git"
+    librepo = "https://github.com/lasote/conan-poco.git" # CHANGE lasote with pocoproject when is merged! https://github.com/pocoproject/conan-poco/pull/10/files
     branch = "release/1.8.0.1"
 
     def setUp(self):

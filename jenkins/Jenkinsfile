@@ -13,50 +13,49 @@ def runner = "jenkins/runner.py"
 
 def builders = [:]
 try{
-for (x in slaves) {
-    def slave = x
-    for (y in pyvers) {
-        def pyver = y
-        builders["${slave} - ${pyver}"] = {
-            node(slave) {
-                stage("${slave} - ${pyver}"){
-                    def vars = checkout scm
-                    def bn = env.BUILD_NUMBER
-                    def workdir = "test/${bn}/${pyver}"
+    for (x in slaves) {
+        def slave = x
+        for (y in pyvers) {
+            def pyver = y
+            builders["${slave} - ${pyver}"] = {
+                node(slave) {
+                    stage("${slave} - ${pyver}"){
+                        def vars = checkout scm
+                        def bn = env.BUILD_NUMBER
+                        def workdir = "test/${bn}/${pyver}"
 
-                    if(slave == "Linux"){
-                        docker.image('lasote/conantests').inside("-e CONAN_USER_HOME=${WORKSPACE}") {
-                            sh(script: "python ${runner} ${modules} ${pyver} ${branch} /tmp/${workdir} --num_cores=${numcores}")
+                        if(slave == "Linux"){
+                            docker.image('lasote/conantests').inside("-e CONAN_USER_HOME=${WORKSPACE}") {
+                                sh(script: "python ${runner} ${modules} ${pyver} ${branch} /tmp/${workdir} --num_cores=${numcores}")
+                            }
                         }
-                    }
-                    else if(slave == "Windows"){
-                        try{
-                          workdir = "${bn}\\${pyver}"
-                          withEnv(["CONAN_TEST_FOLDER=${win_tmp_base}${workdir}"]){
-                            bat(script: "python ${runner} ${modules} ${pyver} ${branch} \"${win_tmp_base}${workdir}\" --num_cores=${numcores}")
-                          }
+                        else if(slave == "Windows"){
+                            try{
+                              workdir = "${bn}\\${pyver}"
+                              withEnv(["CONAN_TEST_FOLDER=${win_tmp_base}${workdir}"]){
+                                bat(script: "python ${runner} ${modules} ${pyver} ${branch} \"${win_tmp_base}${workdir}\" --num_cores=${numcores}")
+                              }
+                            }
+                            finally{
+                              bat(script: "rd /s /q \"${win_tmp_base}${workdir}\"")
+                            }
                         }
-                        finally{
-                          bat(script: "rd /s /q \"${win_tmp_base}${workdir}\"")
-                        }
-                    }
-                    else if(slave == "Macos"){
-                        try{
-                          withEnv(['PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin']) {
-                              sh(script: "python ${runner} ${modules} ${pyver} ${branch} /tmp/${workdir} --num_cores=${numcores}")
-                          }
-                        }
-                        finally{
-                          sh(script: "rm -rf /tmp/${workdir}")
+                        else if(slave == "Macos"){
+                            try{
+                              withEnv(['PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin']) {
+                                  sh(script: "python ${runner} ${modules} ${pyver} ${branch} /tmp/${workdir} --num_cores=${numcores}")
+                              }
+                            }
+                            finally{
+                              sh(script: "rm -rf /tmp/${workdir}")
+                            }
                         }
                     }
                 }
             }
         }
     }
-}
-parallel builders
-
+    parallel builders
 }
 catch(e){
     def subject = "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
@@ -64,3 +63,7 @@ catch(e){
     slackSend (color: '#FF0000', message: summary)
     throw e
 }
+
+def subject = "SUCCESS! Another day with a green ${branch}!"
+def summary = "${subject} (${env.BUILD_URL})"
+slackSend (color: '#00FF00', message: summary)
