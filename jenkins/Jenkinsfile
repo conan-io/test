@@ -7,7 +7,7 @@ def branch = env.JOB_NAME.split("_")[1]
 
 modules = "\"" + modules.join(" ") + "\""
 
-def win_tmp_base = "D:\\J\\t2\\"
+def win_tmp_base = "D:/J/t2/"
 def rest_tmp_base = "/tmp/"
 def runner = "jenkins/runner.py"
 
