@@ -133,4 +133,4 @@ compiler.threads=posix
 """ % subsystem_require
 
         save_files(files)
-        run("conan create conan/testing --profile ./myprofile --update")
+        run("conan create . conan/testing --profile ./myprofile --update")
