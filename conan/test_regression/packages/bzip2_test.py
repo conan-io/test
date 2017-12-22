@@ -1,4 +1,4 @@
-from conan.test_regression.utils.base_exe import BaseExeTest, run
+from conan.test_regression.utils.base_exe import BaseExeTest, run, conan_create_command
 
 
 class Bzip2Test(BaseExeTest):
@@ -14,7 +14,7 @@ class Bzip2Test(BaseExeTest):
 
     def test_repo(self):
         run("git clone --depth 1 %s -b %s ." % (self.librepo, self.branch))
-        run("conan create . conan/testing")
+        run(conan_create_command("conan/testing"))
 
     def test_install_remote(self):
         run("git clone --depth 1 %s -b %s ." % (self.librepo, self.branch))

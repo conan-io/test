@@ -4,6 +4,9 @@ import tempfile
 import os
 import logging
 from subprocess import PIPE, Popen
+from conans import __version__ as client_version
+from conans.model.version import Version
+
 try:
     from StringIO import StringIO
 except ImportError:
@@ -32,6 +35,11 @@ def save(filename, content):
 def load(filename, ):
     with open(filename, "r") as handle:
         return handle.read()
+
+
+def conan_create_command(user_channel):
+    dot = "." if client_version > Version("0.31") else ""
+    return "conan create %s %s" % (dot, user_channel)
 
 
 def run(command, ignore_error=False, capture=False):
