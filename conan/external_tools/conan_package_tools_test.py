@@ -14,7 +14,8 @@ class ConanPackageToolsTest(BaseExeTest):
         run("git clone --depth 1 %s -b %s ." % (librepo, branch))
         env = {"CONAN_USERNAME": "conan",
                "CONAN_CHANNEL": "testing",
-               "CONAN_DOCKER_USE_SUDO": "0"}
+               "CONAN_DOCKER_USE_SUDO": "0",
+               "CONAN_REFERENCE": "bzip2/1.0.6"}
 
         if platform.system() == "Windows":
             env["CONAN_VISUAL_VERSIONS"] = "15"

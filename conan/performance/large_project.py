@@ -1,4 +1,6 @@
 import unittest
+
+from conan.test_regression.utils.base_exe import path_dot
 from conans.test.utils.cpp_test_files import cpp_hello_conan_files
 import time
 from conans.test.utils.tools import TestClient
@@ -30,7 +32,7 @@ class PerformanceTest(unittest.TestCase):
                                                   use_additional_infos=use_additional_infos)
 
             client.save(files, clean_first=True)
-            client.run("export lasote/stable")
+            client.run("export %s lasote/stable" % path_dot())
 
         # Now lets depend on it
         if deep:

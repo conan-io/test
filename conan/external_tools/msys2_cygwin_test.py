@@ -100,7 +100,7 @@ class ConanBash(ConanFile):
             tools.run_in_windows_bash(self, 'myrun.bat')
         '''
                 client.save({CONANFILE: conanfile}, clean_first=True)
-                client.run("export lasote/stable")
+                client.run("export %s lasote/stable" % path_dot())
                 client.run("install bash/0.1@lasote/stable --build")
                 self.assertIn("Hello MYVAR", client.user_io.out)
                 self.assertIn("HELLO PARENT!", client.user_io.out)
