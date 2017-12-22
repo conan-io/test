@@ -38,8 +38,12 @@ def load(filename, ):
 
 
 def conan_create_command(user_channel):
-    dot = "." if client_version > Version("0.31") else ""
+    dot = path_dot()
     return "conan create %s %s" % (dot, user_channel)
+
+
+def path_dot():
+    return "." if client_version > Version("0.31") else ""
 
 
 def run(command, ignore_error=False, capture=False):

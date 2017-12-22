@@ -5,6 +5,7 @@ import unittest
 import six
 from future.moves import sys
 
+from conan.test_regression.utils.base_exe import path_dot
 from conans.paths import CONANFILE
 from conans.test.utils.cpp_test_files import cpp_hello_conan_files
 from conans.test.utils.tools import TestClient
@@ -45,7 +46,7 @@ class Conan(ConanFile):
         client.save({"conanfile.py": conanfile,
                      "src/meson.build": meson,
                      "src/header.h": "//myheader.h"})
-        client.run("create Hello/0.1@lasote/channel")
+        client.run("create %s Hello/0.1@lasote/channel" % path_dot())
         self.assertIn("Hello/0.1@lasote/channel: HEADER //myheader.h", client.out)
         # Now local flow
         build_folder = os.path.join(client.current_folder, "build")
@@ -121,4 +122,4 @@ int main(){
                                       build=six.PY3, pure_c=True)
         client.save(files, clean_first=True)
         files[CONANFILE] = files[CONANFILE].replace('generators = "cmake", "gcc"', "")
-        client.run("export conan/stable")
+        client.run("export %s conan/stable" % path_dot())

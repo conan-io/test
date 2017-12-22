@@ -4,7 +4,7 @@ import nose
 from nose_parameterized import parameterized
 
 from conan.conf import msys2_in_path
-from conan.test_regression.utils.base_exe import BaseExeTest, save_files, run
+from conan.test_regression.utils.base_exe import BaseExeTest, save_files, run, path_dot
 from conans import tools
 from conans.model.ref import ConanFileReference
 from conans.model.version import Version
@@ -36,7 +36,7 @@ class ConanBash(ConanFile):
         '''
                 client = TestClient()
                 client.save({CONANFILE: conanfile})
-                client.run("export lasote/stable")
+                client.run("export %s lasote/stable" % path_dot())
                 client.run("install bash/0.1@lasote/stable --build")
                 expected_curdir_base = unix_path(
                     client.client_cache.conan(ConanFileReference.loads("bash/0.1@lasote/stable")))
@@ -61,7 +61,7 @@ class ConanBash(ConanFile):
 '''
                 client = TestClient()
                 client.save({CONANFILE: conanfile})
-                client.run("create bash/0.1@lasote/stable")
+                client.run("create %s bash/0.1@lasote/stable" % path_dot())
                 self.assertIn("build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/relative", client.user_io.out)
 
     def run_in_windows_bash_env_var_test(self):
@@ -83,7 +83,7 @@ class ConanBash(ConanFile):
 '''
                 client = TestClient()
                 client.save({CONANFILE: conanfile})
-                client.run("create lasote/stable")
+                client.run("create %s lasote/stable" % path_dot())
 
                 conanfile = '''
 from conans import ConanFile, tools
@@ -133,4 +133,4 @@ compiler.threads=posix
 """ % subsystem_require
 
         save_files(files)
-        run("conan create . conan/testing --profile ./myprofile --update")
+        run("conan create %s conan/testing --profile ./myprofile --update" % path_dot())
