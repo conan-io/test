@@ -20,8 +20,8 @@ class ConanPackageToolsTest(BaseExeTest):
         if platform.system() == "Windows":
             env["CONAN_VISUAL_VERSIONS"] = "15"
         elif platform.system() == "Linux":
-            env["CONAN_GCC_VERSIONS"] = "7"
-            env["CONAN_USE_DOCKER"] = "1"
+            env["CONAN_GCC_VERSIONS"] = "5"
+            # env["CONAN_USE_DOCKER"] = "1" docker command not found, check why and enable again
         elif platform.system() == "Darwin":
             env["CONAN_APPLE_CLANG_VERSIONS"] = "9.0"
 
