@@ -10,7 +10,7 @@ from conans import tools
 class ConanPackageToolsTest(BaseExeTest):
 
     def test_package_tools(self):
-        if sys.version_info == (3, 4):
+        if sys.version_info[0:2] == (3, 4):
             raise nose.SkipTest('Py 3.4 fails with python setup.py install for some reason')
 
         run("pip install conan_package_tools --no-dependencies")  # Install latest
