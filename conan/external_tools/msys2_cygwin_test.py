@@ -121,7 +121,7 @@ mingw_installer/1.0@conan/stable
 %s
  
 [settings]
-os_buikd=Windows
+os_build=Windows
 arch_build=x86_64
 os=Windows
 arch=x86_64
