@@ -80,3 +80,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     run_tests(args.module, args.conan_branch, args.pyver, args.tmp_folder, num_cores=args.num_cores)
+
+
+# python jenkins/runner.py conan.external_tools.conan_package_tools_test py27 develop /tmp/kk --num_cores=1
