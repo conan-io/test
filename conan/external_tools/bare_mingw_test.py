@@ -2,6 +2,7 @@ import os
 import unittest
 
 from conan.conf import mingw_in_path
+from conan.test_regression.utils.base_exe import path_dot
 from conans import tools
 from conans.test.integration.basic_build_test import build
 from conans.test.integration.diamond_test import DiamondTester
@@ -24,7 +25,8 @@ class MinGWDiamondTest(unittest.TestCase):
                 not_env = os.system("g++ --version > nul")
                 if not_env != 0:
                     raise Exception("This platform does not support G++ command")
-                install = "install -s compiler=gcc -s compiler.libcxx=libstdc++ -s compiler.version=4.9"
+                install = "install %s -s compiler=gcc -s compiler.libcxx=libstdc++ " \
+                          "-s compiler.version=4.9" % path_dot()
                 self.diamond_tester.test(install=install, use_cmake=False)
 
         
@@ -36,7 +38,8 @@ class BuildMingwTest(unittest.TestCase):
                 not_env = os.system("c++ --version > nul")
                 if not_env != 0:
                     raise Exception("This platform does not support G++ command")
-                install = "install -s compiler=gcc -s compiler.libcxx=libstdc++ -s compiler.version=4.9"
+                install = "install %s -s compiler=gcc -s compiler.libcxx=libstdc++ " \
+                          "-s compiler.version=4.9" % path_dot()
                 for cmd, lang, static, pure_c in [(install, 0, True, True),
                                                   (install + " -o language=1 -o static=False", 1, False, False)]:
                     build(self, cmd, static, pure_c, use_cmake=False, lang=lang)
