@@ -19,14 +19,14 @@ class MinGWDiamondTest(unittest.TestCase):
                                  users={"lasote": "mypass"})  # exported users and passwords
         servers = {"default": test_server}
         conan = TestClient(servers=servers, users={"default": [("lasote", "mypass")]})
-        if Version(client_version) > Version("0.31"):
+        if Version(client_version) < Version("0.31"):
             raise nose.SkipTest('Only >= 1.0 version')
 
         from conans.test.integration.diamond_test import DiamondTester
         self.diamond_tester = DiamondTester(self, conan, servers)
     
     def diamond_mingw_test(self):
-        if Version(client_version) > Version("0.31"):
+        if Version(client_version) < Version("0.31"):
             raise nose.SkipTest('Only >= 1.0 version')
         with tools.remove_from_path("bash.exe"):
             with mingw_in_path():
@@ -41,7 +41,7 @@ class MinGWDiamondTest(unittest.TestCase):
 class BuildMingwTest(unittest.TestCase):
 
     def build_mingw_test(self):
-        if Version(client_version) > Version("0.31"):
+        if Version(client_version) < Version("0.31"):
             raise nose.SkipTest('Only >= 1.0 version')
 
         with tools.remove_from_path("bash.exe"):
