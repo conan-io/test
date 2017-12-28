@@ -107,7 +107,7 @@ int main(){
         if six.PY2:  # Meson only available
             return
 
-        client.run("build .. --source_folder ..")
+        client.run("build .. --source-folder ..")
         if platform.system() == "Windows":
             command = "demo"
         else:
