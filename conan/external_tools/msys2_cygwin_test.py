@@ -43,7 +43,7 @@ class ConanBash(ConanFile):
                 self.assertIn(expected_curdir_base, client.user_io.out)
 
     def run_in_windows_bash_inject_env_test(self):
-        if Version(conan_version) < Version("1.0.0-beta.1") or platform.system() != "Windows":
+        if Version(conan_version) < Version("1.0.0-beta.4") or platform.system() != "Windows":
             raise nose.SkipTest('Only windows test')
         with tools.remove_from_path("bash.exe"):
             with msys2_in_path():
