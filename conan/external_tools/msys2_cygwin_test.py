@@ -42,6 +42,30 @@ class ConanBash(ConanFile):
                     client.client_cache.conan(ConanFileReference.loads("bash/0.1@lasote/stable")))
                 self.assertIn(expected_curdir_base, client.user_io.out)
 
+    def run_in_windows_bash_inject_env_test(self):
+        if Version(conan_version) < Version("1.0.0-beta.1") or platform.system() != "Windows":
+            raise nose.SkipTest('Only windows test')
+        with tools.remove_from_path("bash.exe"):
+            with msys2_in_path():
+                conanfile = '''
+from conans import ConanFile, tools
+
+class ConanBash(ConanFile):
+    name = "bash"
+    version = "0.1"
+    settings = "os", "compiler", "build_type", "arch"
+
+    def build(self):
+        vs_path = tools.vcvars_dict(self.settings)["PATH"]
+        tools.run_in_windows_bash(self, "link", env={"PATH": vs_path})
+
+'''
+                client = TestClient()
+                client.save({CONANFILE: conanfile})
+                client.run("export %s lasote/stable" % path_dot())
+                client.run("install bash/0.1@lasote/stable --build", ignore_error=True) # Link will fail, but run
+                self.assertIn("Microsoft (R) Incremental Linker Version", client.user_io.out)
+
     def run_in_windows_bash_relative_path_test(self):
         if Version(conan_version) < Version("1.0.0-beta.1") or platform.system() != "Windows":
             raise nose.SkipTest('Only windows test')
