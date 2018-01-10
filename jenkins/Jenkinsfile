@@ -3,7 +3,7 @@ def modules = ["conan"]
 def slaves = ['Linux', 'Windows', 'Macos']
 def pyvers = ['py36', 'py27', 'py34']
 def numcores = "1"
-def branch = env.JOB_NAME.split("_")[1].replace("-", "/")
+def branch = env.JOB_NAME.split("_")[1].replaceAll("-", "/")
 
 modules = "\"" + modules.join(" ") + "\""
 
