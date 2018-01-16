@@ -28,8 +28,12 @@ class LibConan(ConanFile):
         client.save({"conanfile.py": conanfile})
         for bash_path in [CONAN_GIT_BIN_PATH, CONAN_GIT_BIN_PATH2, CONAN_MSYS2_PATH, CONAN_CYGWIN_PATH, CONAN_WSL_PATH]:
             bash_path = os.path.normpath(os.path.join(bash_path, "bash.exe"))
+            # CI doesn't have WSL (not win10)
             if not os.path.exists(bash_path):
-                raise Exception("Not found tool: %s" % bash_path)
+                if bash_path != CONAN_WSL_PATH:
+                    raise Exception("Not found tool: %s" % bash_path)
+                else:
+                    continue
 
             with tools.environment_append({"CONAN_BASH_PATH": bash_path}):
                 client.run("create . lib/1.0@lasote/stable")
