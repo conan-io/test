@@ -14,7 +14,7 @@ from conans.test.utils.tools import TestClient
 class RunInWindowsBashTest(unittest.TestCase):
 
     def test_run_bash_in_windows(self):
-        if Version(conan_version) < Version("1.0.0-beta.4") or platform.system() != "Windows":
+        if Version(conan_version) < Version("1.0.2") or platform.system() != "Windows":
             raise nose.SkipTest('Only windows test')
         conanfile = """
 from conans import ConanFile, tools
