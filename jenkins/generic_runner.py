@@ -15,7 +15,7 @@ def run_in_venv(command, tmp_folder, pyver=None):
                             "bin" if platform.system() != "Windows" else "Scripts",
                             "activate")
     cmd = "virtualenv --python \"{pyenv}\" \"{venv_dest}\" && " \
-          "{source_cmd} \"{venv_exe}\" && " \
+          "{source_cmd} \"{venv_exe}\" && pip install conan_package_tools --upgrade && " \
           "{command}".format(**{"pyenv": pylocations[pyver],
                                 "venv_dest": venv_dest,
                                 "venv_exe": venv_exe,
