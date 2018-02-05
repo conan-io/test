@@ -13,6 +13,9 @@ CONAN_WSL_PATH = os.getenv("CONAN_WSL_PATH", "c:/windows/sysnative")
 CONAN_GIT_BIN_PATH = os.getenv("CONAN_GIT_BIN_PATH", "C:/Tools/Git/bin")
 CONAN_GIT_BIN_PATH2 = os.getenv("CONAN_GIT_BIN_PATH2", "C:/Program Files/Git/bin")
 
+CONAN_MINGW_MAKE_PATH = os.getenv("CONAN_MINGW_MAKE_PATH",
+                                  "C:/mingw-w64/mingw32/bin/mingw32-make.exe")
+
 @contextmanager
 def mingw_in_path():
     return _in_path_win(CONAN_MINGW_PATH)
