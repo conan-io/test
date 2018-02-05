@@ -3,7 +3,7 @@ import unittest
 
 import nose
 
-from conan.conf import mingw_in_path, CONAN_MINGW_MAKE_PATH
+from conan.conf import mingw_in_path, CONAN_STANDALONE_MAKE_PATH
 from conan.test_regression.utils.base_exe import path_dot
 from conans import tools
 from conans.model.version import Version
@@ -67,10 +67,10 @@ class MinGWUsingCMakeAndMake(unittest.TestCase):
         client = TestClient()
         files = cpp_hello_conan_files("lib", "1.0")
         client.save(files)
-        make_location = "/usr/bin/make" if not tools.os_info.is_windows else CONAN_MINGW_MAKE_PATH
+        make_location = "/usr/bin/make" if not tools.os_info.is_windows else CONAN_STANDALONE_MAKE_PATH
         gen = "Unix Makefiles" if not tools.os_info.is_windows else "MinGW Makefiles"
         with tools.environment_append({"CONAN_CMAKE_GENERATOR": gen,
                                        "CONAN_MAKE_PROGRAM": make_location}):
-            client.run("create . conan/testing")
+            client.run("create . conan/testing  -s compiler=gcc -s compiler.libcxx=libstdc++ -s compiler.version=4.9")
             self.assertIn('-DCMAKE_MAKE_PROGRAM="%s"' % make_location, client.out)
 
