@@ -7,6 +7,7 @@ from conans import tools
 from conans.errors import ConanException
 from conans.model.version import Version
 from conans import __version__ as client_version
+from conans.model import settings
 
 
 class vswhereTest(unittest.TestCase):
@@ -90,24 +91,79 @@ class vswhereTest(unittest.TestCase):
                             "BuildTools" in install_path or
                             "Microsoft Visual Studio 14.0" in install_path)
 
-    # def vs_installation_path_test(self):
-    #     # test installation paths w/o preference parameter and ENV_VAR
+    def vs_installation_path_test(self):
+        # Default behaviour
+        install_path = tools.vs_installation_path("15")
+        self.assertIn("Community", install_path)
+        install_path = tools.vs_installation_path("14")
+        self.assertIn("Microsoft Visual Studio 14.0", install_path)
 
-    # def vvcars_command_test(self):
-    #     # get right paths for installations (similar to vs_where)
+        # only BuildTools detection
+        install_path = tools.vs_installation_path("15", preference=["BuildTools"])
+        self.assertIn("BuildTools", install_path)
+        install_path = tools.vs_installation_path("14", preference=["BuildTools"])
+        self.assertIn("Microsoft Visual Studio 14.0", install_path)
 
-    # def build_test(self):
-    #     if Version(client_version) < Version("1.1"):
-    #         raise nose.SkipTest('Only >= 1.1 version')
+        # Ask for not installed versions
+        install_path = tools.vs_installation_path("15", preference=["Enterprise"])
+        self.assertIsNone(install_path)
+        install_path = tools.vs_installation_path("15", preference=["Professional"])
+        self.assertIsNone(install_path)
 
-    #     with tools.remove_from_path("bash.exe"):
-    #         with mingw_in_path():
-    #             not_env = os.system("c++ --version > nul")
-    #             if not_env != 0:
-    #                 raise Exception("This platform does not support G++ command")
-    #             install = "install %s -s compiler=gcc -s compiler.libcxx=libstdc++ " \
-    #                       "-s compiler.version=4.9" % path_dot()
-    #             for cmd, lang, static, pure_c in [(install, 0, True, True),
-    #                                               (install + " -o language=1 -o static=False", 1, False, False)]:
-    #                 from conans.test.integration.basic_build_test import build
-    #                 build(self, cmd, static, pure_c, use_cmake=False, lang=lang)
+        # Change preference order
+        install_path = tools.vs_installation_path("15", preference=["BuildTools", "Community", "Professional", "Enterprise"])
+        self.assertNotIn("Community", install_path)
+        self.assertNotIn("Professional", install_path)
+        self.assertNotIn("Enterprise", install_path)
+        self.assertIn("BuildTools", install_path)
+
+        install_path = tools.vs_installation_path("15", preference=["Professional", "Enterprise", "Community"])
+        self.assertNotIn("BuildTools", install_path)
+        self.assertNotIn("Professional", install_path)
+        self.assertNotIn("Enterprise", install_path)
+        self.assertIn("Community", install_path)
+
+        # Preference order by env var
+        with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"BuildTools, Community,Professional, Enterprise"})):
+            install_path = tools.vs_installation_path("15")
+            self.assertNotIn("Community", install_path)
+            self.assertNotIn("Professional", install_path)
+            self.assertNotIn("Enterprise", install_path)
+            self.assertIn("BuildTools", install_path)
+        
+        with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"Professional, Enterprise,Community"})):
+            install_path = tools.vs_installation_path("15")
+            self.assertNotIn("BuildTools", install_path)
+            self.assertNotIn("Professional", install_path)
+            self.assertNotIn("Enterprise", install_path)
+            self.assertIn("Community", install_path)
+
+    def vvcars_command_test(self):
+        fake_settings = settings.Settings({"os":"Windows", "arch": "x86_64"})
+
+        # preference order with VS 15
+        with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"BuildTools, Community,Professional, Enterprise"})):
+            command = tools.vcvars_command(settings=fake_settings, compiler_version="15")
+            self.assertNotIn("Community", command)
+            self.assertIn("VC/Auxiliary/Build/vcvarsall.bat", command)
+            self.assertIn("Microsoft Visual Studio\\2017\\BuildTools", command)
+            self.assertIn("VSCMD_START_DIR", command)
+
+        with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"Professional, Enterprise,Community"})):
+            command = tools.vcvars_command(settings=fake_settings, compiler_version="15")
+            self.assertNotIn("BuildTools", command)
+            self.assertIn("VC/Auxiliary/Build/vcvarsall.bat", command)
+            self.assertIn("Microsoft Visual Studio\\2017\\Community", command)
+            self.assertIn("VSCMD_START_DIR", command)
+
+        # With VS 14 order of preference does not apply
+        command = tools.vcvars_command(settings=fake_settings, compiler_version="14")
+        self.assertNotIn("VSCMD_START_DIR", command)
+        self.assertIn("VC/vcvarsall.bat", command)
+        self.assertIn("Microsoft Visual Studio 14.0\\", command)
+
+    def build_test(self):
+        fake_settings = settings.Settings({"os":"Windows", "arch": "x86_64"})
+        cmd = "install . -s compiler='Visual Studio' -s compiler.version=15"
+        from conans.test.integration.basic_build_test import build
+        build(self, cmd, static=True, pure_c=False, use_cmake=True, lang=0)
