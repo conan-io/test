@@ -1,4 +1,5 @@
 import os
+import platform
 import unittest
 
 import nose
@@ -8,6 +9,8 @@ from conans.errors import ConanException
 from conans.model.version import Version
 from conans import __version__ as client_version
 from conans.model import settings
+from conans.test.utils.tools import TestClient
+from conans.test.utils.visual_project_files import get_vs_project_files
 
 
 class vswhereTest(unittest.TestCase):
@@ -17,19 +20,20 @@ class vswhereTest(unittest.TestCase):
     #   - VS Community 14 (2015)
     #
     #   - BuildTools 15 (2017) OR VS Community 15 (2017)
-    modern_products = 1 # 2017 or higher versions -> vswhere()
-    all_modern_products = 2 # 2017 or higher versions -> vswhere(products=["*"])
-    modern_and_legacy_products = 2 # 2017 and lower versions -> vswhere(legacy=True)
+    modern_products = 1 # 2017 or higher versions without BuildTools -> vswhere()
+    all_modern_products = 2 # 2017 or higher versions with BuildTools -> vswhere(products=["*"])
+    modern_and_legacy_products = 2 # 2017 and lower versions (without BuildTools) -> vswhere(legacy=True)
     only_legacy_products = 1
     all_products = 3
 
     def setUp(self):
-        if Version(client_version) < Version("1.1"):
-            raise nose.SkipTest('Only >= 1.1 version')
+        if platform.system() != "Windows":
+            raise nose.SkipTest("Only Windows test")
+        if Version(client_version) < Version("1.1.0-dev"):
+            raise nose.SkipTest("Only >= 1.1.0-dev version")
 
     def vs_comntools_test(self):
         # Fake path
-        print(tools.__file__)
         with tools.environment_append({"VS150COMNTOOLS": "fake/path/here"}):
             path = tools.vs_comntools("15")
             self.assertEqual(path, "fake/path/here")
@@ -43,10 +47,6 @@ class vswhereTest(unittest.TestCase):
         self.assertEqual(path, None)
 
     def vswhere_test(self):
-        # test there is some output
-        output = tools.vswhere()
-        self.assertIsNotNone(output)
-
         # products and legacy not allowed
         self.assertRaises(ConanException, tools.vswhere, products=["*"], legacy=True)
 
@@ -59,20 +59,18 @@ class vswhereTest(unittest.TestCase):
         nproducts = len(products)
         
         self.assertEqual(nproducts, self.all_modern_products)
-        for product in products:
-            install_path = product["installationPath"]
-            self.assertTrue("Community" in install_path or
-                            "BuildTools" in install_path)
+        installation_paths = [product["installationPath"] for product in products]
+        self.assertTrue(any("Community" in install_path for install_path in installation_paths))
+        self.assertTrue(any("BuildTools" in install_path for install_path in installation_paths))
 
         # Detect also legacy products but no modern BuildTools
         products = tools.vswhere(legacy=True)
         nproducts = len(products)
 
         self.assertEqual(nproducts, self.modern_and_legacy_products)
-        for product in products:
-            install_path = product["installationPath"]
-            self.assertTrue("Community" in install_path or
-                            "Microsoft Visual Studio 14.0" in install_path)
+        installation_paths = [product["installationPath"] for product in products]
+        self.assertTrue(any("Community" in install_path for install_path in installation_paths))
+        self.assertTrue(any("Microsoft Visual Studio 14.0" in install_path for install_path in installation_paths))
 
         # Detect all installed products
         products = tools.vswhere(products=["*"])
@@ -85,11 +83,10 @@ class vswhereTest(unittest.TestCase):
         nproducts = len(products)
 
         self.assertEqual(nproducts, self.all_products)
-        for product in products:
-            install_path = product["installationPath"]
-            self.assertTrue("Community" in install_path or
-                            "BuildTools" in install_path or
-                            "Microsoft Visual Studio 14.0" in install_path)
+        installation_paths = [product["installationPath"] for product in products]
+        self.assertTrue(any("Community" in install_path for install_path in installation_paths))
+        self.assertTrue(any("BuildTools" in install_path for install_path in installation_paths))
+        self.assertTrue(any("Microsoft Visual Studio 14.0" in install_path for install_path in installation_paths))
 
     def vs_installation_path_test(self):
         # Default behaviour
@@ -112,30 +109,18 @@ class vswhereTest(unittest.TestCase):
 
         # Change preference order
         install_path = tools.vs_installation_path("15", preference=["BuildTools", "Community", "Professional", "Enterprise"])
-        self.assertNotIn("Community", install_path)
-        self.assertNotIn("Professional", install_path)
-        self.assertNotIn("Enterprise", install_path)
         self.assertIn("BuildTools", install_path)
 
         install_path = tools.vs_installation_path("15", preference=["Professional", "Enterprise", "Community"])
-        self.assertNotIn("BuildTools", install_path)
-        self.assertNotIn("Professional", install_path)
-        self.assertNotIn("Enterprise", install_path)
         self.assertIn("Community", install_path)
 
         # Preference order by env var
         with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"BuildTools, Community,Professional, Enterprise"})):
             install_path = tools.vs_installation_path("15")
-            self.assertNotIn("Community", install_path)
-            self.assertNotIn("Professional", install_path)
-            self.assertNotIn("Enterprise", install_path)
             self.assertIn("BuildTools", install_path)
         
         with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"Professional, Enterprise,Community"})):
             install_path = tools.vs_installation_path("15")
-            self.assertNotIn("BuildTools", install_path)
-            self.assertNotIn("Professional", install_path)
-            self.assertNotIn("Enterprise", install_path)
             self.assertIn("Community", install_path)
 
     def vvcars_command_test(self):
@@ -163,7 +148,25 @@ class vswhereTest(unittest.TestCase):
         self.assertIn("Microsoft Visual Studio 14.0\\", command)
 
     def build_test(self):
-        fake_settings = settings.Settings({"os":"Windows", "arch": "x86_64"})
-        cmd = "install . -s compiler='Visual Studio' -s compiler.version=15"
-        from conans.test.integration.basic_build_test import build
-        build(self, cmd, static=True, pure_c=False, use_cmake=True, lang=0)
+        conan_build_vs = """
+from conans import ConanFile, MSBuild
+
+class HelloConan(ConanFile):
+    name = "Hello"
+    version = "1.2.1"
+    settings = "os", "build_type", "arch", "compiler"
+    export_source = "*"
+
+    def build(self):
+        msbuild = MSBuild(self)
+        msbuild.build("MyProject.sln")
+"""
+        client = TestClient()
+        files = get_vs_project_files()
+        files["conanfile.py"] = conan_build_vs
+        client.save(files)
+
+        with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"BuildTools"})):
+            client.run("install .")
+            client.run("build .")
+            self.assertIn("BuildTools", client.out)
