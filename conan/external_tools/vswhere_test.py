@@ -176,7 +176,7 @@ class HelloConan(ConanFile):
         client.save(files)
 
         with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"BuildTools",
-                                       "CONAN_SKIP_VS_PROJECTS_UPGRADE":"False"})):
+                                       "CONAN_SKIP_VS_PROJECTS_UPGRADE":"True"})):
             client.run("install .")
             client.run("build .")
             self.assertIn("BuildTools", client.out)
