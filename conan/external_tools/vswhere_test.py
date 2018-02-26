@@ -159,7 +159,7 @@ class HelloConan(ConanFile):
 
     def build(self):
         msbuild = MSBuild(self)
-        msbuild.build("MyProject.sln")
+        msbuild.build("MyProject.sln", upgrade_project=False)
 """
         client = TestClient()
         files = get_vs_project_files()
@@ -167,6 +167,16 @@ class HelloConan(ConanFile):
         client.save(files)
 
         with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"BuildTools"})):
+            client.run("install .")
+            client.run("build .")
+            self.assertIn("BuildTools", client.out)
+
+        conan_build_vs = conan_build_vs.replace("upgrade_project=False", "upgrade_project=True")
+        files["conanfile.py"] = conan_build_vs
+        client.save(files)
+
+        with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"BuildTools",
+                                       "CONAN_SKIP_VS_PROJECTS_UPGRADE":"False"})):
             client.run("install .")
             client.run("build .")
             self.assertIn("BuildTools", client.out)
