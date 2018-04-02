@@ -13,8 +13,9 @@ class ConanPackageToolsTest(BaseExeTest):
         if sys.version_info[0:2] == (3, 4):
             raise nose.SkipTest('Py 3.4 fails with python setup.py install for some reason')
 
+        run("pip install tabulate")  # only package tools dep
         run("pip install conan_package_tools --no-dependencies")  # Install latest
-
+        
         # To try build bzip2 with package tools
         librepo = "https://github.com/lasote/conan-bzip2.git"
         branch = "release/1.0.6"
