@@ -1,14 +1,14 @@
-from conan.test_regression.utils.base_exe import BaseExeTest, run, conan_create_command
+from conan_tests.test_regression.utils.base_exe import BaseExeTest, run, conan_create_command
 
 
-class ZlibTest(BaseExeTest):
+class Bzip2Test(BaseExeTest):
 
-    libref = "zlib/1.2.11@conan/stable"
-    librepo = "https://github.com/lasote/conan-zlib.git"
-    branch = "release/1.2.11"
+    libref = "bzip2/1.0.6@conan/stable"
+    librepo = "https://github.com/lasote/conan-bzip2.git"
+    branch = "release/1.0.6"
 
     def setUp(self):
-        super(ZlibTest, self).setUp()
+        super(Bzip2Test, self).setUp()
         run("conan remote add conan-center https://conan.bintray.com --insert 1")
         run("conan remove %s -f" % self.libref)
 

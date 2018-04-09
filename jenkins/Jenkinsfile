@@ -1,5 +1,5 @@
 
-def modules = ["conan"]
+def modules = ["conan_tests"]
 def slaves = ['Linux', 'Windows', 'Macos']
 def pyvers = ['py36', 'py27', 'py34']
 def numcores = "1"

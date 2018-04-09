@@ -3,8 +3,8 @@ import platform
 import nose
 from nose_parameterized import parameterized
 
-from conan.conf import msys2_in_path
-from conan.test_regression.utils.base_exe import BaseExeTest, save_files, run, path_dot
+from conan_tests.conf import msys2_in_path
+from conan_tests.test_regression.utils.base_exe import BaseExeTest, save_files, run, path_dot
 from conans import tools
 from conans.model.ref import ConanFileReference
 from conans.model.version import Version

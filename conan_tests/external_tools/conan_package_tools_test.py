@@ -3,7 +3,7 @@ import sys
 
 import nose
 
-from conan.test_regression.utils.base_exe import BaseExeTest, run
+from conan_tests.test_regression.utils.base_exe import BaseExeTest, run
 from conans import tools
 
 
@@ -15,7 +15,7 @@ class ConanPackageToolsTest(BaseExeTest):
 
         run("pip install tabulate")  # only package tools dep
         run("pip install conan_package_tools --no-dependencies")  # Install latest
-        
+
         # To try build bzip2 with package tools
         librepo = "https://github.com/lasote/conan-bzip2.git"
         branch = "release/1.0.6"

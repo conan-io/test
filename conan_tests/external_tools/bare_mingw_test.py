@@ -3,8 +3,8 @@ import unittest
 
 import nose
 
-from conan.conf import mingw_in_path
-from conan.test_regression.utils.base_exe import path_dot
+from conan_tests.conf import mingw_in_path
+from conan_tests.test_regression.utils.base_exe import path_dot
 from conans import tools
 from conans.model.version import Version
 from conans.test.utils.tools import TestServer, TestClient

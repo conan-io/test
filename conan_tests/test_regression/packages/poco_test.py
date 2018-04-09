@@ -1,14 +1,14 @@
-from conan.test_regression.utils.base_exe import BaseExeTest, run, conan_create_command
+from conan_tests.test_regression.utils.base_exe import BaseExeTest, run, conan_create_command
 
 
-class Bzip2Test(BaseExeTest):
+class PocoTest(BaseExeTest):
 
-    libref = "bzip2/1.0.6@conan/stable"
-    librepo = "https://github.com/lasote/conan-bzip2.git"
-    branch = "release/1.0.6"
+    libref = "Poco/1.8.0.1@pocoproject/stable"
+    librepo = "https://github.com/lasote/conan-poco.git" # CHANGE lasote with pocoproject when is merged! https://github.com/pocoproject/conan-poco/pull/10/files
+    branch = "release/1.8.0.1"
 
     def setUp(self):
-        super(Bzip2Test, self).setUp()
+        super(PocoTest, self).setUp()
         run("conan remote add conan-center https://conan.bintray.com --insert 1")
         run("conan remove %s -f" % self.libref)
 

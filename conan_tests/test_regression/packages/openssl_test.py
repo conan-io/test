@@ -1,14 +1,14 @@
-from conan.test_regression.utils.base_exe import BaseExeTest, run, conan_create_command
+from conan_tests.test_regression.utils.base_exe import BaseExeTest, run, conan_create_command
 
 
-class PocoTest(BaseExeTest):
+class OpenSSLTest(BaseExeTest):
 
-    libref = "Poco/1.8.0.1@pocoproject/stable"
-    librepo = "https://github.com/lasote/conan-poco.git" # CHANGE lasote with pocoproject when is merged! https://github.com/pocoproject/conan-poco/pull/10/files
-    branch = "release/1.8.0.1"
+    libref = "OpenSSL/1.0.2m@conan/stable"
+    librepo = "https://github.com/lasote/conan-openssl.git"
+    branch = "release/1.0.2m"
 
     def setUp(self):
-        super(PocoTest, self).setUp()
+        super(OpenSSLTest, self).setUp()
         run("conan remote add conan-center https://conan.bintray.com --insert 1")
         run("conan remove %s -f" % self.libref)
 
