@@ -24,7 +24,7 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
         multiprocess = ("--processes=%s --process-timeout=1000 "
                         "--process-restartworker" % num_cores)
 
-    pip_installs = "pip install -r conan/requirements.txt"
+    pip_installs = "pip install -r conan_tests/requirements.txt"
 
     #  --nocapture
     command = "virtualenv --python \"{pyenv}\" \"{venv_dest}\" && " \
