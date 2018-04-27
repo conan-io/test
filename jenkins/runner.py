@@ -25,8 +25,11 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
                         "--process-restartworker" % num_cores)
 
     pip_installs = "pip install -r conan_tests/requirements.txt"
-    if platform.system() == "Windows" and pyver == "py36":
-        pip_installs += " && pip install scons"
+    if platform.system() == "Windows":
+        if pyver == "py36":
+            pip_installs += " && pip install scons"
+        # Otherwise it fails the python setup.py install downloading stuff
+        pip_installs += ' && pip install requests["security"]'
 
     #  --nocapture
     command = "virtualenv --python \"{pyenv}\" \"{venv_dest}\" && " \
