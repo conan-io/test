@@ -25,7 +25,7 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
                         "--process-restartworker" % num_cores)
 
     pip_installs = "pip install -r conan_tests/requirements.txt"
-    if platform.system() == "Windows":
+    if platform.system() == "Windows" and conan_branch != "0.30.3":
         if pyver == "py36":
             pip_installs += " && pip install scons"
         if pyver != "py34":

@@ -2,6 +2,7 @@ import platform
 import unittest
 
 from conans.test.utils.tools import TestClient
+from conans import __version__ as conan_version
 
 import sys
 pyver = str("%s.%s" % sys.version_info[0:2])
@@ -10,6 +11,8 @@ pyver = str("%s.%s" % sys.version_info[0:2])
 class SConsTest(unittest.TestCase):
 
     def test_basic(self):
+        if conan_version < "1.3.0": # Avoid 0.30.0
+            return
         if platform.system() != "Windows" or pyver < "3.6":
             return
         client = TestClient()
