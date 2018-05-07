@@ -24,7 +24,7 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
         multiprocess = ("--processes=%s --process-timeout=1000 "
                         "--process-restartworker" % num_cores)
 
-    pip_installs = ""
+    pip_installs = "pip install --upgrade pip && "
     if platform.system() == "Windows":
         if pyver != "py34":
             # Otherwise it fails the python setup.py install downloading stuff
