@@ -5,11 +5,14 @@ import nose
 
 from conan_tests.test_regression.utils.base_exe import BaseExeTest, run
 from conans import tools
+from conans import __version__ as conan_version
 
 
 class ConanPackageToolsTest(BaseExeTest):
 
     def test_package_tools(self):
+        if conan_version < "1.3.0":  # Avoid 0.30.0
+            return
         if sys.version_info[0:2] == (3, 4):
             raise nose.SkipTest('Py 3.4 fails with python setup.py install for some reason')
 

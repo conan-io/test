@@ -25,8 +25,8 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
                         "--process-restartworker" % num_cores)
 
     pip_installs = "pip install -r conan_tests/requirements.txt"
-    if platform.system() == "Windows" and conan_branch != "0.30.3":
-        if pyver == "py36":
+    if platform.system() == "Windows":
+        if pyver == "py36" and conan_branch != "0.30.3":
             pip_installs += " && pip install scons"
         if pyver != "py34":
             # Otherwise it fails the python setup.py install downloading stuff
@@ -59,6 +59,7 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
     env['PYTHONPATH'] = os.path.join(tmp_folder, "conan_p")
     os.mkdir(env['PYTHON_EGG_CACHE'])
     with environment_append(env):
+        print(command)
         run(command)
 
 
