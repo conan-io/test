@@ -24,17 +24,17 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
         multiprocess = ("--processes=%s --process-timeout=1000 "
                         "--process-restartworker" % num_cores)
 
-    pip_installs = ""
+    pip_installs = []
     if platform.system() == "Windows":
-        pip_installs += "python.exe -m pip install --upgrade pip && "
+        pip_installs.append("python.exe -m pip install --upgrade pip")
         if pyver != "py34":
             # Otherwise it fails the python setup.py install downloading stuff
-            pip_installs += 'pip install requests["security"] && '
+            pip_installs.append('pip install requests["security"]')
         if pyver == "py36" and conan_branch != "0.30.3":
-            pip_installs += "pip install scons && "
+            pip_installs.append("pip install scons")
 
     else:
-        pip_installs += "pip install -r conan_tests/requirements.txt && "
+        pip_installs.append("pip install -r conan_tests/requirements.txt")
 
     #  --nocapture
     command = "virtualenv --python \"{pyenv}\" \"{venv_dest}\" && " \
@@ -54,7 +54,7 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
                                        "venv_exe": venv_exe,
                                        "source_cmd": source_cmd,
                                        "multiprocess": multiprocess,
-                                       "pip_installs": pip_installs,
+                                       "pip_installs": " && ".join(pip_installs),
                                        "cwd": os.getcwd()})
 
     env = get_environ(tmp_folder)
