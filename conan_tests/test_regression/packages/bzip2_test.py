@@ -9,7 +9,6 @@ class Bzip2Test(BaseExeTest):
 
     def setUp(self):
         super(Bzip2Test, self).setUp()
-        run("conan remote add conan-center https://conan.bintray.com --insert 1")
         run("conan remove %s -f" % self.libref)
 
     def test_repo(self):

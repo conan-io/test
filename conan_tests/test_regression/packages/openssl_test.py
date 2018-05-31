@@ -9,7 +9,6 @@ class OpenSSLTest(BaseExeTest):
 
     def setUp(self):
         super(OpenSSLTest, self).setUp()
-        run("conan remote add conan-center https://conan.bintray.com --insert 1")
         run("conan remove %s -f" % self.libref)
 
     def test_repo(self):

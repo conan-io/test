@@ -9,7 +9,6 @@ class PocoTest(BaseExeTest):
 
     def setUp(self):
         super(PocoTest, self).setUp()
-        run("conan remote add conan-center https://conan.bintray.com --insert 1")
         run("conan remove %s -f" % self.libref)
 
     def test_repo(self):
