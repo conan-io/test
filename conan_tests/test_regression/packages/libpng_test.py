@@ -3,14 +3,12 @@ from conan_tests.test_regression.utils.base_exe import BaseExeTest, run, conan_c
 
 class LibPNGTest(BaseExeTest):
 
-    libref = "libpng/1.6.32@conan/stable"
+    libref = "libpng/1.6.34@bincrafters/stable"
     librepo = "https://github.com/lasote/conan-libpng"
     branch = "release/1.6.32"
 
     def setUp(self):
         super(LibPNGTest, self).setUp()
-        run("conan remote add conan-community https://api.bintray.com/conan/conan-community/conan --insert 1",
-            ignore_error=True)
         run("conan remove %s -f" % self.libref)
 
     def test_repo(self):
