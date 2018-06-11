@@ -1,3 +1,4 @@
+import nose
 import platform
 
 from conan_tests.test_regression.utils.base_exe import BaseExeTest, run
@@ -7,6 +8,8 @@ from conans.tools import save
 class CMakeStdTest(BaseExeTest):
 
     def cmake_with_raw_flag_test(self):
+        if platform.system() != "Windows":
+            raise nose.SkipTest("Only Windows test")
 
         conanfile = """from conans import ConanFile, CMake
 import os
@@ -43,9 +46,5 @@ add_executable(main main.cpp)
         save("conanfile.py", conanfile)
         save("main.cpp", test_main)
         save("CMakeLists.txt", cmake)
-        if platform.system() == "Windows":
-            settings = '-s compiler="Visual Studio" -s compiler.version=14'  # cmake 2.8 doesn't work with 15
-        else:
-            settings = ""
-        out = run("conan create . user/channel -s cppstd=14 %s" % settings, capture=True)
+        out = run("conan create . user/channel -s cppstd=14", capture=True)
         self.assertIn("Conan setting CXX_FLAGS flags: -std=c++14", out)
