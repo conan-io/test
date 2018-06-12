@@ -3,13 +3,16 @@ import platform
 
 from conan_tests.test_regression.utils.base_exe import BaseExeTest, run
 from conans.tools import save
+from conans import __version__ as conan_version
 
 
 class CMakeStdTest(BaseExeTest):
 
     def cmake_with_raw_flag_test(self):
-        if platform.system() != "Windows":
-            raise nose.SkipTest("Only Windows test")
+        if conan_version < "1.3.0":  # Avoid 0.30.0
+            raise nose.SkipTest("Only Conan 1.0 test")
+        if platform.system() == "Windows":
+            raise nose.SkipTest("Only Non-windows test")
 
         conanfile = """from conans import ConanFile, CMake
 import os
