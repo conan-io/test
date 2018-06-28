@@ -137,6 +137,10 @@ class MSys2CygwinTestBuildRequiresOrderAppliedPath(BaseExeTest):
     def test_base(self, subsystem_require):
         if Version(conan_version) < Version("1.0.0-beta.1") or platform.system() != "Windows":
             raise nose.SkipTest('Only windows test')
+
+        run("conan remote remove conan-testuite ", ignore_error=True)
+        run("conan remote add conan-center https://conan.bintray.com", ignore_error=True)
+
         files = cpp_hello_conan_files(name="Hello", version="0.1", deps=None, language=0,
                                       static=True, use_cmake=False)
         files["myprofile"] = """
