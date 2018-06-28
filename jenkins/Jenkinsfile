@@ -43,7 +43,7 @@ try{
                               }
                             }
                             finally{
-                              bat(script: "rd /s /q \"${workdir}\"")
+                              // bat(script: "rd /s /q \"${workdir}\"")
                             }
                         }
                         else if(slave == "Macos"){
