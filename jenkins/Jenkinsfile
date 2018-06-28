@@ -1,14 +1,17 @@
-
+echo "LAUNCHING: ${env.JOB_NAME}"
 def modules = ["conan_tests"]
 def slaves = ['Linux', 'Windows', 'Macos']
 def pyvers = ['py36', 'py27', 'py34']
 def numcores = "1"
 def branch = env.JOB_NAME.split("_")[1].replaceAll("-", "/")
 def build_short = env.JOB_NAME.split("_")[1].replaceAll("-", "").replaceAll(".", "")
+echo "-- BUILD SHORT: ${build_short}"
 
 modules = "\"" + modules.join(" ") + "\""
 
-def win_tmp_base = "D:/J/t2/${build_short}"
+def win_tmp_base = "D:/J/t2/${build_short}/"
+echo "-- win_tmp_base: ${win_tmp_base}"
+
 def rest_tmp_base = "/tmp/"
 def runner = "jenkins/runner.py"
 
