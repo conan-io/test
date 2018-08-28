@@ -136,10 +136,10 @@ class ConanBash(ConanFile):
 
 class MSys2CygwinTestBuildRequiresOrderAppliedPath(BaseExeTest):
 
-    @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
-    @unittest.skipIf(Version(conan_version) < Version("1.0.0-beta.1"), "Required modern Conan")
     @parameterized.expand([("cygwin_installer/2.9.0@bincrafters/stable", ),
                            ("msys2_installer/latest@bincrafters/stable",)])
+    @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
+    @unittest.skipIf(Version(conan_version) < Version("1.0.0-beta.1"), "Required modern Conan")
     def test_base(self, subsystem_require):
 
         run("conan remote remove conan-testuite ", ignore_error=True)
