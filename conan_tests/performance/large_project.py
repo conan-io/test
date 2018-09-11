@@ -2,7 +2,6 @@ import time
 import os
 import unittest
 
-from conan_tests.test_regression.utils.base_exe import path_dot
 from conans.test.utils.cpp_test_files import cpp_hello_conan_files
 from conans.test.utils.tools import TestClient
 
@@ -63,4 +62,5 @@ class PerformanceTest(unittest.TestCase):
 
 if __name__ == "__main__":
     client = generate_large_project(num=250, folder=os.getcwd())
-    print client.base_folder
+    print(client.base_folder)
+
