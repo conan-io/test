@@ -16,7 +16,7 @@ def generate_large_project(num, folder=None, deep=True):
 
     for i in range(num):
         if i % 10 == 0:
-            print "Generating ", i
+            print ("Generating ", i)
         if i == 0:
             files = cpp_hello_conan_files("Hello0", "0.1", build=False)
         else:
