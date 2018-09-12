@@ -6,7 +6,7 @@ from conans.test.utils.cpp_test_files import cpp_hello_conan_files
 from conans.test.utils.tools import TestClient
 
 
-def generate_random_project_graph(depth, width=(1, 10), cardinality=(0, 4),
+def generate_random_project_graph(depth=15, width=(1, 10), cardinality=(0, 2),
                                   client=None, random_seed=None, **hello_kwargs):
     import random
     random.seed(random_seed)
@@ -118,8 +118,8 @@ class PerformanceTest(unittest.TestCase):
 
     def test_graph_project(self):
         client = TestClient()
-        client = generate_random_project_graph(depth=10, client=client,
-                                               build=False, use_additional_infos=1)
+        client = generate_random_project_graph(depth=15, cardinality=(0, 2), random_seed=23456,
+                                               client=client, build=False, use_additional_infos=1)
 
         graph_html = os.path.abspath(os.path.join(os.getcwd(), "graph.html"))
         client.run("info -g {} .".format(graph_html))
