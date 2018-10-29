@@ -1,12 +1,13 @@
 import os
 
 from threading import Thread
-from conan_tests.test_regression.utils.base_exe import BaseExeTest, run, save, conan_create_command
+from conan_tests.test_regression.utils.base_exe import BaseExeTest, run, save
 from conans.model.version import Version
 from conans.server.rest.bottle_plugins.version_checker import VersionCheckerPlugin
 from conans.test.server.utils.server_launcher import TestServerLauncher
 
 count = 10  # Number of parallel processes
+
 
 class ConcurrencyTest(BaseExeTest):
 
@@ -113,7 +114,7 @@ class ConanMeanLib(ConanFile):
 
         total_output = []
         def install():
-            out = run("conan install .", capture=True)
+            out = run("conan install . -s os=Windows", capture=True)
             total_output.append(out)
         ps = []
         for i in range(count):
@@ -127,5 +128,5 @@ class ConanMeanLib(ConanFile):
         final_output = "\n".join(total_output)
         self.assertEqual(1, final_output.count("Downloading conan_export.tgz"))
         self.assertEqual(1, final_output.count("Downloading conan_package.tgz"))
-        self.assertEqual(count - 1, final_output.count("Pkg/0.1@user/testing: Download skipped. Probable concurrent download"))
-    
+        self.assertEqual(count - 1, final_output.count("Pkg/0.1@user/testing: Download skipped. "
+                                                       "Probable concurrent download"))
