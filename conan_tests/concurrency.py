@@ -128,5 +128,7 @@ class ConanMeanLib(ConanFile):
         final_output = "\n".join(total_output)
         self.assertEqual(1, final_output.count("Downloading conan_export.tgz"))
         self.assertEqual(1, final_output.count("Downloading conan_package.tgz"))
-        self.assertEqual(count - 1, final_output.count("Pkg/0.1@user/testing: Download skipped. "
-                                                       "Probable concurrent download"))
+        skipped_downloads = final_output.count("Pkg/0.1@user/testing: Download skipped. "
+                                               "Probable concurrent download")
+        cached_installs = final_output.count("Pkg/0.1@user/testing: Already installed!")
+        self.assertEqual(count - 1, skipped_downloads + cached_installs)
