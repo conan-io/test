@@ -93,11 +93,15 @@ class ConcurrencyDownloadTest(BaseExeTest):
 
     def install_one_test(self):
         conanfile = """from conans import ConanFile
+import time
 class ConanMeanLib(ConanFile):
     settings = "os"
     exports = "*.txt"
     def package(self):
         self.copy("*")
+    # To force some concurrency
+    def system_requirements(self):
+        time.sleep(0.3)
     """
 
         save("conanfile.py", conanfile)
@@ -128,5 +132,7 @@ class ConanMeanLib(ConanFile):
         final_output = "\n".join(total_output)
         self.assertEqual(1, final_output.count("Downloading conan_export.tgz"))
         self.assertEqual(1, final_output.count("Downloading conan_package.tgz"))
-        self.assertEqual(count - 1, final_output.count("Pkg/0.1@user/testing: Download skipped. "
-                                                       "Probable concurrent download"))
+        skipped_downloads = final_output.count("Pkg/0.1@user/testing: Download skipped. "
+                                               "Probable concurrent download")
+        cached_installs = final_output.count("Pkg/0.1@user/testing: Already installed!")
+        self.assertEqual(count - 1, skipped_downloads + cached_installs)
