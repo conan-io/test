@@ -93,11 +93,15 @@ class ConcurrencyDownloadTest(BaseExeTest):
 
     def install_one_test(self):
         conanfile = """from conans import ConanFile
+import time
 class ConanMeanLib(ConanFile):
     settings = "os"
     exports = "*.txt"
     def package(self):
         self.copy("*")
+    # To force some concurrency
+    def system_requirements(self):
+        time.sleep(0.3)
     """
 
         save("conanfile.py", conanfile)
