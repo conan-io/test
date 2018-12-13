@@ -63,7 +63,7 @@ class ConanBash(ConanFile):
                 client = TestClient()
                 client.save({CONANFILE: conanfile})
                 client.run("export %s lasote/stable" % path_dot())
-                client.run("install bash/0.1@lasote/stable --build", ignore_error=True) # Link will fail, but run
+                client.run("install bash/0.1@lasote/stable --build", assert_error=True) # Link will fail, but run
                 self.assertIn("Microsoft (R) Incremental Linker Version", client.user_io.out)
 
     def run_in_windows_bash_relative_path_test(self):
