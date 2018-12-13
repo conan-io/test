@@ -1,33 +1,46 @@
 import os
 import unittest
 
-import nose
-
 from conan_tests.conf import mingw_in_path
 from conan_tests.test_regression.utils.base_exe import path_dot
 from conans import tools
 from conans.model.version import Version
-from conans.test.utils.tools import TestServer, TestClient
+from conans.test.utils.tools import TestClient, TestServer
+from conans.test.utils.cpp_test_files import cpp_hello_conan_files
 from conans import __version__ as client_version
 
 
+@unittest.skipIf(Version(client_version) < Version("0.31"), 'Only >= 1.0 version')
 class MinGWDiamondTest(unittest.TestCase):
 
     def setUp(self):
-        test_server = TestServer(
-                                 [],  # write permissions
+        test_server = TestServer([],  # write permissions
                                  users={"lasote": "mypass"})  # exported users and passwords
-        servers = {"default": test_server}
-        conan = TestClient(servers=servers, users={"default": [("lasote", "mypass")]})
-        if Version(client_version) < Version("0.31"):
-            raise nose.SkipTest('Only >= 1.0 version')
+        self.servers = {"default": test_server}
+        self.client = TestClient(servers=self.servers, users={"default": [("lasote", "mypass")]})
 
-        from conans.test.integration.diamond_test import DiamondTester
-        self.diamond_tester = DiamondTester(self, conan, servers)
-    
+    def _export(self, name, version=None, deps=None, use_cmake=True, cmake_targets=False):
+        files = cpp_hello_conan_files(name, version, deps, need_patch=True, use_cmake=use_cmake,
+                                        cmake_targets=cmake_targets, with_exe=False)
+        self.client.save(files, clean_first=True)
+        self.client.run("export . lasote/stable")
+
     def diamond_mingw_test(self):
-        if Version(client_version) < Version("0.31"):
-            raise nose.SkipTest('Only >= 1.0 version')
+        use_cmake = cmake_targets = False
+        self._export("Hello0", "0.1", use_cmake=use_cmake, cmake_targets=cmake_targets)
+        self._export("Hello1", "0.1", ["Hello0/0.1@lasote/stable"], use_cmake=use_cmake,
+                     cmake_targets=cmake_targets)
+        self._export("Hello2", "0.1", ["Hello0/0.1@lasote/stable"], use_cmake=use_cmake,
+                     cmake_targets=cmake_targets)
+        self._export("Hello3", "0.1", ["Hello1/0.1@lasote/stable", "Hello2/0.1@lasote/stable"],
+                     use_cmake=use_cmake, cmake_targets=cmake_targets)
+
+        files3 = cpp_hello_conan_files("Hello4", "0.1", ["Hello3/0.1@lasote/stable"],
+                                       language=1, use_cmake=use_cmake,
+                                       cmake_targets=cmake_targets)
+
+        self.client.save(files3)
+
         with tools.remove_from_path("bash.exe"):
             with mingw_in_path():
                 not_env = os.system("g++ --version > nul")
@@ -35,15 +48,22 @@ class MinGWDiamondTest(unittest.TestCase):
                     raise Exception("This platform does not support G++ command")
                 install = "install %s -s compiler=gcc -s compiler.libcxx=libstdc++ " \
                           "-s compiler.version=4.9" % path_dot()
-                self.diamond_tester.test(install=install, use_cmake=False)
 
-        
+                self.client.run("install %s -s compiler=gcc -s compiler.libcxx=libstdc++ " 
+                                "-s compiler.version=4.9 --build=missing" % path_dot())
+                self.client.run("build .")
+
+        command = os.sep.join([".", "bin", "say_hello"])
+        self.client.runner(command, cwd=self.client.current_folder)
+        self.assertEqual(['Hola Hello4', 'Hola Hello3', 'Hola Hello1', 'Hola Hello0',
+                          'Hola Hello2', 'Hola Hello0'],
+                         str(self.client.out).splitlines()[-6:])
+
+
+@unittest.skipIf(Version(client_version) < Version("0.31"), 'Only >= 1.0 version')        
 class BuildMingwTest(unittest.TestCase):
 
     def build_mingw_test(self):
-        if Version(client_version) < Version("0.31"):
-            raise nose.SkipTest('Only >= 1.0 version')
-
         with tools.remove_from_path("bash.exe"):
             with mingw_in_path():
                 not_env = os.system("c++ --version > nul")
