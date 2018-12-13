@@ -4,7 +4,7 @@ import unittest
 
 import nose
 
-from conan.conf import CONAN_WSL_PATH, CONAN_MSYS2_PATH, CONAN_CYGWIN_PATH, CONAN_GIT_BIN_PATH, CONAN_GIT_BIN_PATH_SPACES, \
+from conan_tests.conf import CONAN_WSL_PATH, CONAN_MSYS2_PATH, CONAN_CYGWIN_PATH, CONAN_GIT_BIN_PATH, CONAN_GIT_BIN_PATH_SPACES, \
     CONAN_MSYS2_PATH_SPACES, CONAN_CYGWIN_PATH_SPACES
 from conans import __version__ as conan_version
 from conans import tools

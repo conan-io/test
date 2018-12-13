@@ -99,7 +99,7 @@ class BaseExeTest(unittest.TestCase):
         self.user_home = user_home
         self.old_env = dict(os.environ)
         os.environ.update({"CONAN_USER_HOME": user_home})
-        run("conan remote remove conan-center", ignore_error=True)
+        # run("conan remote remove conan-center", ignore_error=True)
         run("conan remote remove conan-transit", ignore_error=True)
         run("conan remote add conan-testuite https://conan.jfrog.io/conan/api/conan/conan-testsuite", ignore_error=True)
 

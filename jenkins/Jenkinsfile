@@ -1,13 +1,17 @@
-
-def modules = ["conan"]
+echo "LAUNCHING: ${env.JOB_NAME}"
+def modules = ["conan_tests"]
 def slaves = ['Linux', 'Windows', 'Macos']
 def pyvers = ['py36', 'py27', 'py34']
 def numcores = "1"
 def branch = env.JOB_NAME.split("_")[1].replaceAll("-", "/")
+def build_short = env.JOB_NAME.split("_")[1].replaceAll("\\.", "").replaceAll("-", "")
+echo "-- BUILD SHORT: ${build_short}"
 
 modules = "\"" + modules.join(" ") + "\""
 
-def win_tmp_base = "D:/J/t2/"
+def win_tmp_base = "D:/J/t2/${build_short}/"
+echo "-- win_tmp_base: ${win_tmp_base}"
+
 def rest_tmp_base = "/tmp/"
 def runner = "jenkins/runner.py"
 
@@ -25,7 +29,7 @@ try{
                         checkout scm
                         def bn = env.BUILD_NUMBER
                         def base_dir = (slave == "Windows") ? win_tmp_base : rest_tmp_base
-                        def workdir = "${base_dir}${bn}/${pyver}"
+                        def workdir = "${base_dir}/${bn}/${pyver}"
 
                         if(slave == "Linux"){
                             docker.image('lasote/conantests').inside("-e CONAN_USER_HOME=${WORKSPACE}") {
@@ -39,7 +43,7 @@ try{
                               }
                             }
                             finally{
-                              bat(script: "rd /s /q \"${workdir}\"")
+                                bat(script: "rd /s /q \"${workdir}\"")
                             }
                         }
                         else if(slave == "Macos"){

@@ -1,10 +1,10 @@
 import platform
 
-import nose
+import unittest
 from nose_parameterized import parameterized
 
-from conan.conf import msys2_in_path
-from conan.test_regression.utils.base_exe import BaseExeTest, save_files, run, path_dot
+from conan_tests.conf import msys2_in_path
+from conan_tests.test_regression.utils.base_exe import BaseExeTest, save_files, run, path_dot
 from conans import tools
 from conans.model.ref import ConanFileReference
 from conans.model.version import Version
@@ -17,9 +17,9 @@ from conans import __version__ as conan_version
 
 class RunInMsys2BashTest(BaseExeTest):
 
+    @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
+    @unittest.skipIf(Version(conan_version) < Version("1.0.0-beta.1"), "Required modern Conan")
     def run_in_windows_bash_test(self):
-        if Version(conan_version) < Version("1.0.0-beta.1") or platform.system() != "Windows":
-            raise nose.SkipTest('Only windows test')
         with tools.remove_from_path("bash.exe"):
             with msys2_in_path():
                 conanfile = '''
@@ -42,13 +42,15 @@ class ConanBash(ConanFile):
                     client.client_cache.conan(ConanFileReference.loads("bash/0.1@lasote/stable")))
                 self.assertIn(expected_curdir_base, client.user_io.out)
 
+    @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
+    @unittest.skipIf(Version(conan_version) < Version("1.0.0-beta.4"), "Required modern Conan")
     def run_in_windows_bash_inject_env_test(self):
-        if Version(conan_version) < Version("1.0.0-beta.4") or platform.system() != "Windows":
-            raise nose.SkipTest('Only windows test')
+
         with tools.remove_from_path("bash.exe"):
             with msys2_in_path():
                 conanfile = '''
-from conans import ConanFile, tools
+import os
+from conans import ConanFile, tools, __version__ as conan_version
 
 class ConanBash(ConanFile):
     name = "bash"
@@ -57,6 +59,8 @@ class ConanBash(ConanFile):
 
     def build(self):
         vs_path = tools.vcvars_dict(self.settings)["PATH"]
+        if conan_version >= "1.7.0":
+            vs_path = os.pathsep.join(vs_path)
         tools.run_in_windows_bash(self, "link", env={"PATH": vs_path})
 
 '''
@@ -66,9 +70,9 @@ class ConanBash(ConanFile):
                 client.run("install bash/0.1@lasote/stable --build", assert_error=True) # Link will fail, but run
                 self.assertIn("Microsoft (R) Incremental Linker Version", client.user_io.out)
 
+    @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
+    @unittest.skipIf(Version(conan_version) < Version("1.0.0-beta.1"), "Required modern Conan")
     def run_in_windows_bash_relative_path_test(self):
-        if Version(conan_version) < Version("1.0.0-beta.1") or platform.system() != "Windows":
-            raise nose.SkipTest('Only windows test')
         with tools.remove_from_path("bash.exe"):
             with msys2_in_path():
                 conanfile = '''
@@ -88,9 +92,9 @@ class ConanBash(ConanFile):
                 client.run("create %s bash/0.1@lasote/stable" % path_dot())
                 self.assertIn("build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/relative", client.user_io.out)
 
+    @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
+    @unittest.skipIf(Version(conan_version) < Version("1.0.0-beta.1"), "Required modern Conan")
     def run_in_windows_bash_env_var_test(self):
-        if Version(conan_version) < Version("1.0.0-beta.1") or platform.system() != "Windows":
-            raise nose.SkipTest('Only windows test')
         with tools.remove_from_path("bash.exe"):
             with msys2_in_path():
                 conanfile = '''
@@ -134,9 +138,13 @@ class MSys2CygwinTestBuildRequiresOrderAppliedPath(BaseExeTest):
 
     @parameterized.expand([("cygwin_installer/2.9.0@bincrafters/stable", ),
                            ("msys2_installer/latest@bincrafters/stable",)])
+    @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
+    @unittest.skipIf(Version(conan_version) < Version("1.0.0-beta.1"), "Required modern Conan")
     def test_base(self, subsystem_require):
-        if Version(conan_version) < Version("1.0.0-beta.1") or platform.system() != "Windows":
-            raise nose.SkipTest('Only windows test')
+
+        run("conan remote remove conan-testuite ", ignore_error=True)
+        run("conan remote add conan-center https://conan.bintray.com", ignore_error=True)
+
         files = cpp_hello_conan_files(name="Hello", version="0.1", deps=None, language=0,
                                       static=True, use_cmake=False)
         files["myprofile"] = """

@@ -1,4 +1,4 @@
-from conan.test_regression.utils.base_exe import BaseExeTest, run, conan_create_command
+from conan_tests.test_regression.utils.base_exe import BaseExeTest, run, conan_create_command
 
 
 class ZlibTest(BaseExeTest):
@@ -9,7 +9,6 @@ class ZlibTest(BaseExeTest):
 
     def setUp(self):
         super(ZlibTest, self).setUp()
-        run("conan remote add conan-center https://conan.bintray.com --insert 1")
         run("conan remove %s -f" % self.libref)
 
     def test_repo(self):

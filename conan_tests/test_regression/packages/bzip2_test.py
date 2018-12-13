@@ -1,15 +1,14 @@
-from conan.test_regression.utils.base_exe import BaseExeTest, run, conan_create_command
+from conan_tests.test_regression.utils.base_exe import BaseExeTest, run, conan_create_command
 
 
-class OpenSSLTest(BaseExeTest):
+class Bzip2Test(BaseExeTest):
 
-    libref = "OpenSSL/1.0.2m@conan/stable"
-    librepo = "https://github.com/lasote/conan-openssl.git"
-    branch = "release/1.0.2m"
+    libref = "bzip2/1.0.6@conan/stable"
+    librepo = "https://github.com/lasote/conan-bzip2.git"
+    branch = "release/1.0.6"
 
     def setUp(self):
-        super(OpenSSLTest, self).setUp()
-        run("conan remote add conan-center https://conan.bintray.com --insert 1")
+        super(Bzip2Test, self).setUp()
         run("conan remove %s -f" % self.libref)
 
     def test_repo(self):

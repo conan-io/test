@@ -1,18 +1,19 @@
 import platform
 import sys
 
-import nose
+import unittest
 
-from conan.test_regression.utils.base_exe import BaseExeTest, run
+from conan_tests.test_regression.utils.base_exe import BaseExeTest, run
 from conans import tools
+from conans import __version__ as conan_version
 
 
 class ConanPackageToolsTest(BaseExeTest):
 
+    @unittest.skipIf(sys.version_info[0:2] == (3, 4), "No py3.4")
+    @unittest.skipIf(conan_version < "1.3.0", "Required modern Conan")
     def test_package_tools(self):
-        if sys.version_info[0:2] == (3, 4):
-            raise nose.SkipTest('Py 3.4 fails with python setup.py install for some reason')
-
+        run("pip install tabulate")  # only package tools dep
         run("pip install conan_package_tools --no-dependencies")  # Install latest
 
         # To try build bzip2 with package tools
