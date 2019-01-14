@@ -39,7 +39,7 @@ class ConanBash(ConanFile):
                 client.run("export %s lasote/stable" % path_dot())
                 client.run("install bash/0.1@lasote/stable --build")
                 expected_curdir_base = unix_path(
-                    client.client_cache.conan(ConanFileReference.loads("bash/0.1@lasote/stable")))
+                    client.cache.conan(ConanFileReference.loads("bash/0.1@lasote/stable")))
                 self.assertIn(expected_curdir_base, client.user_io.out)
 
     @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
