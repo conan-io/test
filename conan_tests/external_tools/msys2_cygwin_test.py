@@ -38,8 +38,12 @@ class ConanBash(ConanFile):
                 client.save({CONANFILE: conanfile})
                 client.run("export %s lasote/stable" % path_dot())
                 client.run("install bash/0.1@lasote/stable --build")
+                if Version(conan_version) < Version("1.12.0-dev"):
+                    cache = client.client_cache
+                else:
+                    cache = client.cache
                 expected_curdir_base = unix_path(
-                    client.cache.conan(ConanFileReference.loads("bash/0.1@lasote/stable")))
+                    cache.conan(ConanFileReference.loads("bash/0.1@lasote/stable")))
                 self.assertIn(expected_curdir_base, client.user_io.out)
 
     @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
