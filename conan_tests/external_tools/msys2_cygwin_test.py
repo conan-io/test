@@ -38,7 +38,7 @@ class ConanBash(ConanFile):
                 client.save({CONANFILE: conanfile})
                 client.run("export %s lasote/stable" % path_dot())
                 client.run("install bash/0.1@lasote/stable --build")
-                if Version(conan_version) < Version("1.12.0-dev"):
+                if Version(conan_version) < Version("1.12.0"):
                     cache = client.client_cache
                 else:
                     cache = client.cache
