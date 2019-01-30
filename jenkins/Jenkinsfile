@@ -4,7 +4,7 @@ def slaves = ['Linux', 'Windows', 'Macos']
 def pyvers = ['py36', 'py27', 'py34']
 def numcores = "1"
 def branch = env.JOB_NAME.split("_")[1].replaceAll("-", "/")
-def build_short = env.JOB_NAME.split("_")[1].replaceAll("\\.", "").replaceAll("-", "")
+def build_short = env.JOB_NAME.split("_")[1].replaceAll("\\.", "").replaceAll("-", "").replace("release", "rl")
 echo "-- BUILD SHORT: ${build_short}"
 
 modules = "\"" + modules.join(" ") + "\""
