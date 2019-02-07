@@ -4,7 +4,7 @@ from conan_tests.test_regression.utils.base_exe import BaseExeTest, run, conan_c
 class OpenSSLTest(BaseExeTest):
 
     libref = "OpenSSL/1.0.2m@conan/stable"
-    librepo = "https://github.com/lasote/conan-openssl.git"
+    librepo = "https://github.com/conan-community/conan-openssl.git"
     branch = "release/1.0.2m"
 
     def setUp(self):

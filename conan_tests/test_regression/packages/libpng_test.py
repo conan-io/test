@@ -4,7 +4,7 @@ from conan_tests.test_regression.utils.base_exe import BaseExeTest, run, conan_c
 class LibPNGTest(BaseExeTest):
 
     libref = "libpng/1.6.34@bincrafters/stable"
-    librepo = "https://github.com/lasote/conan-libpng"
+    librepo = "https://github.com/conan-community/conan-libpng"
     branch = "release/1.6.32"
 
     def setUp(self):

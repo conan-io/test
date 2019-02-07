@@ -4,7 +4,7 @@ from conan_tests.test_regression.utils.base_exe import BaseExeTest, run, conan_c
 class Bzip2Test(BaseExeTest):
 
     libref = "bzip2/1.0.6@conan/stable"
-    librepo = "https://github.com/lasote/conan-bzip2.git"
+    librepo = "https://github.com/conan-community/conan-bzip2.git"
     branch = "release/1.0.6"
 
     def setUp(self):
