@@ -9,7 +9,7 @@ class OpenSSLTest(BaseExeTest):
 
     def setUp(self):
         super(OpenSSLTest, self).setUp()
-        run("conan remove %s -f" % self.libref)
+        run("conan remove %s -f" % self.libref, ignore_error=True)
 
     def test_repo(self):
         run("git clone --depth 1 %s -b %s ." % (self.librepo, self.branch))
