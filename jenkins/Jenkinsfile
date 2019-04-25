@@ -16,6 +16,25 @@ def rest_tmp_base = "/tmp/"
 def runner = "jenkins/runner.py"
 
 
+// First test Artifactory
+try{
+    node("Linux") {
+        stage("Testing revisions with Artifactory"){
+            withEnv(['CONAN_GIT_TAG=${branch}', 'CONAN_GIT_REPO=https://github.com/conan-io/conan.git', "ARTIFACTORY_VERSION=6.9.1"]) {
+                withCredentials([string(credentialsId: 'ART_LICENSE', variable: 'ART_LICENSE')]) {
+                     sh(script: "cd artifactory_tests && ./run_tests.sh")
+                }
+            }
+        }
+    }
+}
+catch(e){
+    def subject = "FAILED ARTIFACTORY: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+    def summary = "${subject} (${env.BUILD_URL}), Conan Branch: ${branch}"
+    slackSend (color: '#FF0000', message: summary)
+    throw e
+}
+
 def builders = [:]
 try{
     for (x in slaves) {
@@ -63,15 +82,6 @@ try{
     }
     parallel builders
 
-    node("Linux") {
-        stage("Testing revisions with Artifactory"){
-            withEnv(['CONAN_GIT_TAG=develop', 'CONAN_GIT_REPO=https://github.com/conan-io/conan.git', "ARTIFACTORY_VERSION=6.9.1"]) {
-                withCredentials([string(credentialsId: 'ART_LICENSE', variable: 'ART_LICENSE')]) {
-                     sh(script: "artifactory_tests/run_tests.sh"
-                }
-            }
-        }
-    }
 }
 catch(e){
     def subject = "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
