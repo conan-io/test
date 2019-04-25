@@ -1,0 +1,22 @@
+version: "3"
+services:
+  artifactory:
+    expose:
+      - 8090
+    ports:
+      - 8090:8081
+    build:
+      context: ./artifactory
+      args:
+        - artifactory_version=$ARTIFACTORY_VERSION
+    environment:
+      - ART_LICENSE=$ART_LICENSE
+  test_runner:
+    command: '/bin/bash'
+    build:
+      context: test_runner
+    depends_on:
+      - artifactory
+    environment:
+      - CONAN_GIT_REPO=$CONAN_GIT_REPO
+      - CONAN_GIT_TAG=$CONAN_GIT_TAG
