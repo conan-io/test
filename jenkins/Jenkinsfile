@@ -62,6 +62,16 @@ try{
         }
     }
     parallel builders
+
+    node("Linux") {
+        stage("Testing revisions with Artifactory"){
+            withEnv(['CONAN_GIT_TAG=develop', 'CONAN_GIT_REPO=https://github.com/conan-io/conan.git', "ARTIFACTORY_VERSION=6.9.1"]) {
+                withCredentials([string(credentialsId: 'ART_LICENSE', variable: 'ART_LICENSE')]) {
+                     sh(script: "cd artifactory_tests && ./run_tests.sh")
+                }
+            }
+        }
+    }
 }
 catch(e){
     def subject = "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
