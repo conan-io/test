@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 set -e
-echo "Launching containers..."
+echo "Building containers..."
 docker-compose build
+docker-compose pull
+echo "Launching containers..."
 docker-compose up -d
 if docker-compose run test_runner ./launch.sh; then
     echo "Tests OK!"
@@ -11,5 +13,5 @@ if docker-compose run test_runner ./launch.sh; then
 else
     echo "Tests Failed!"
     docker-compose down
-    exit -1
+    exit 99
 fi

@@ -1,6 +1,4 @@
 FROM ubuntu:latest
-ARG tag=develop
-ARG git_repo=https://github.com/conan-io/conan.git
 RUN apt-get update
 RUN apt-get install -y git python3 python3-pip curl subversion
 ADD launch.sh launch.sh
