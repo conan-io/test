@@ -17,23 +17,25 @@ def runner = "jenkins/runner.py"
 
 
 // First test Artifactory
-try{
-    node("Linux") {
-        stage("Testing revisions with Artifactory"){
-            checkout scm
-            withEnv(["CONAN_GIT_TAG=${branch}".toString(), 'CONAN_GIT_REPO=https://github.com/conan-io/conan.git', "ARTIFACTORY_VERSION=6.9.1"]) {
-                withCredentials([string(credentialsId: 'ART_LICENSE', variable: 'ART_LICENSE')]) {
-                     sh(script: "cd artifactory_tests && ./run_tests.sh")
+if(branch != "master"){ // TODO: REMOVE THIS WHEN 1.15 IS RELEASED!
+    try{
+        node("Linux") {
+            stage("Testing revisions with Artifactory"){
+                checkout scm
+                withEnv(["CONAN_GIT_TAG=${branch}".toString(), 'CONAN_GIT_REPO=https://github.com/conan-io/conan.git', "ARTIFACTORY_VERSION=6.9.1"]) {
+                    withCredentials([string(credentialsId: 'ART_LICENSE', variable: 'ART_LICENSE')]) {
+                         sh(script: "cd artifactory_tests && ./run_tests.sh")
+                    }
                 }
             }
         }
     }
-}
-catch(e){
-    def subject = "FAILED ARTIFACTORY: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-    def summary = "${subject} (${env.BUILD_URL}), Conan Branch: ${branch}"
-    slackSend (color: '#FF0000', message: summary)
-    throw e
+    catch(e){
+        def subject = "FAILED ARTIFACTORY: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+        def summary = "${subject} (${env.BUILD_URL}), Conan Branch: ${branch}"
+        slackSend (color: '#FF0000', message: summary)
+        throw e
+    }
 }
 
 def builders = [:]
