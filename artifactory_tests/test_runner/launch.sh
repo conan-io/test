@@ -11,4 +11,4 @@ git clone $CONAN_GIT_REPO
 cd conan
 git checkout $CONAN_GIT_TAG
 pip3 install -e . && pip3 install -r conans/requirements_dev.txt
-nosetests conans.test.integration.revisions_test
+nosetests -A "artifactory_ready" -v
