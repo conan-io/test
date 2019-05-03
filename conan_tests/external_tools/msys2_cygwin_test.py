@@ -42,10 +42,11 @@ class ConanBash(ConanFile):
                     cache = client.client_cache
                 else:
                     cache = client.cache
+                ref = ConanFileReference.loads("bash/0.1@lasote/stable")
                 if Version(conan_version) > Version("1.14.10"):
-                    tmp = cache.base_folder(ConanFileReference.loads("bash/0.1@lasote/stable"))
+                    tmp = cache.package_layout(ref).base_folder()
                 else:
-                    tmp = cache.conan(ConanFileReference.loads("bash/0.1@lasote/stable"))
+                    tmp = cache.conan(ref)
                 expected_curdir_base = unix_path(tmp)
                 self.assertIn(expected_curdir_base, client.user_io.out)
 
