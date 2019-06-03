@@ -149,7 +149,7 @@ class vswhereTest(unittest.TestCase):
 
     def build_test(self):
         conan_build_vs = """
-from conans import ConanFile, MSBuild
+from conans import ConanFile, MSBuild, tools
 
 class HelloConan(ConanFile):
     name = "Hello"
@@ -166,17 +166,18 @@ class HelloConan(ConanFile):
         files["conanfile.py"] = conan_build_vs
         client.save(files)
 
-        with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"BuildTools"})):
-            client.run("install .")
-            client.run("build .")
-            self.assertIn("BuildTools", client.out)
+        with(tools.environment_append({"CONAN_PRINT_RUN_COMMANDS": "1"})):
+            with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE": "BuildTools"})):
+                client.run("install .")
+                client.run("build .")
+                self.assertIn("BuildTools", client.out)
 
-        conan_build_vs = conan_build_vs.replace("upgrade_project=False", "upgrade_project=True")
-        files["conanfile.py"] = conan_build_vs
-        client.save(files)
+            conan_build_vs = conan_build_vs.replace("upgrade_project=False", "upgrade_project=True")
+            files["conanfile.py"] = conan_build_vs
+            client.save(files)
 
-        with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"BuildTools",
-                                       "CONAN_SKIP_VS_PROJECTS_UPGRADE":"True"})):
-            client.run("install .")
-            client.run("build .")
-            self.assertIn("BuildTools", client.out)
+            with(tools.environment_append({"CONAN_VS_INSTALLATION_PREFERENCE":"BuildTools",
+                                           "CONAN_SKIP_VS_PROJECTS_UPGRADE":"True"})):
+                client.run("install .")
+                client.run("build .")
+                self.assertIn("BuildTools", client.out)
