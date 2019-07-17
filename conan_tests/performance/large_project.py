@@ -70,21 +70,37 @@ def generate_large_project(num, folder=None, deep=True, client=None):
         client.current_folder = folder
     use_additional_infos = 20
 
+    files = cpp_hello_conan_files("build", "0.1", build=False)
+    client.save(files, clean_first=True)
+    client.run("create . lasote/stable")
+    files = cpp_hello_conan_files("build2", "0.1", build=False)
+    client.save(files, clean_first=True)
+    client.run("create . lasote/stable")
+
     for i in range(num):
         if i % 10 == 0:
             print ("Generating ", i)
         if i == 0:
-            files = cpp_hello_conan_files("Hello0", "0.1", build=False)
+            files = cpp_hello_conan_files("Base", "0.1", build=False)
+            client.save(files, clean_first=True)
+            client.run("export . lasote/stable")
+            files = cpp_hello_conan_files("Base2", "0.1", ["Base/0.1@lasote/stable"], build=False)
+            client.save(files, clean_first=True)
+            client.run("export . lasote/stable")
+            files = cpp_hello_conan_files("Hello0", "0.1", ["Base2/0.1@lasote/stable"], build=False)
         else:
             if not deep:
                 files = cpp_hello_conan_files("Hello%d" % i, "0.1",
-                                                ["Hello0/0.1@lasote/stable"], build=False,
+                                                ["Hello0/0.1@lasote/stable", "Base/0.1@lasote/stable", "Base2/0.1@lasote/stable"], build=False,
                                                 use_additional_infos=use_additional_infos)
             else:
                 files = cpp_hello_conan_files("Hello%d" % i, "0.1",
                                                 ["Hello%s/0.1@lasote/stable" % (i-1)],
                                                 build=False,
                                                 use_additional_infos=use_additional_infos)
+            conanfile = files["conanfile.py"]
+            conanfile = conanfile + "    build_requires = 'build/0.1@lasote/stable', 'build2/0.1@lasote/stable'"
+            files["conanfile.py"] = conanfile
         client.save(files, clean_first=True)
         client.run("export . lasote/stable")
 
@@ -108,7 +124,7 @@ class PerformanceTest(unittest.TestCase):
     """
 
     def test_large_project(self):
-        client = generate_large_project(num=5, deep=True)
+        client = generate_large_project(num=50, deep=True)
         t1 = time.time()
         client.run("install . --build")
         print("Final time with build %s" % (time.time() - t1))
