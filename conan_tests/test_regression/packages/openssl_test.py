@@ -3,18 +3,18 @@ from conan_tests.test_regression.utils.base_exe import BaseExeTest, run, conan_c
 
 class OpenSSLTest(BaseExeTest):
 
-    libref = "OpenSSL/1.0.2m@conan/stable"
+    libref = "OpenSSL/1.0.2o@conan/stable"
     librepo = "https://github.com/conan-community/conan-openssl.git"
-    branch = "release/1.0.2m"
 
     def setUp(self):
         super(OpenSSLTest, self).setUp()
         run("conan remove %s -f" % self.libref, ignore_error=True)
 
-    def test_repo(self):
-        run("git clone --depth 1 %s -b %s ." % (self.librepo, self.branch))
-        run(conan_create_command("conan/testing"))
+    # FIXME: DISABLED UNTIL BINCRAFTERS SOLVE THE OPENSSL REFACTORS
+    #def test_repo(self):
+    #    run("git clone --depth 1 %s  ." % self.librepo)
+    #    run(conan_create_command(self.libref))
 
-    def test_install_remote(self):
-        run("git clone --depth 1 %s -b %s ." % (self.librepo, self.branch))
-        run("conan test test_package %s" % self.libref)
+    #def test_install_remote(self):
+    #    run("git clone --depth 1 %s ." % self.librepo)
+    #    run("conan test test_package %s" % self.libref)
