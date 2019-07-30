@@ -16,8 +16,7 @@ class SConsTest(unittest.TestCase):
         if platform.system() != "Windows" or pyver < "3.6":
             return
         client = TestClient()
-        client.runner("git clone https://github.com/memsharded/conan-scons-template .",
-                      cwd=client.current_folder)
+        client.run_command("git clone https://github.com/memsharded/conan-scons-template .")
         client.run("create . user/testing")
         self.assertIn("Hello World Release!", client.out)
         client.run("create . user/testing -s build_type=Debug")
