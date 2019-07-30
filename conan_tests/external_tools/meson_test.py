@@ -104,7 +104,7 @@ class PkgConfigGeneratorTest(unittest.TestCase):
         command = "demo" if platform.system() == "Windows" else "./demo"
         client.run_command(command)
         self.assertEqual(['Hello LIB_A', 'Hello LIB_B', 'Hello LIB_C', 'Hello LIB_B2'],
-                         str(client.user_io.out).splitlines()[-4:])
+                         str(client.out).splitlines()[-4:])
 
     def _export(self, client, libname, depsname):
         files = cpp_hello_conan_files(libname, "0.1",

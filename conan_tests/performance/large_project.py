@@ -124,7 +124,7 @@ class PerformanceTest(unittest.TestCase):
     """
 
     def test_large_project(self):
-        client = generate_large_project(num=50, deep=True)
+        client = generate_large_project(num=100, deep=True)
         t1 = time.time()
         client.run("install . --build")
         print("Final time with build %s" % (time.time() - t1))
