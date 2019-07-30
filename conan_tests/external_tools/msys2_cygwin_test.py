@@ -48,7 +48,7 @@ class ConanBash(ConanFile):
                 else:
                     tmp = cache.conan(ref)
                 expected_curdir_base = unix_path(tmp)
-                self.assertIn(expected_curdir_base, client.user_io.out)
+                self.assertIn(expected_curdir_base, client.out)
 
     @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
     @unittest.skipIf(Version(conan_version) < Version("1.0.0-beta.4"), "Required modern Conan")
@@ -76,7 +76,7 @@ class ConanBash(ConanFile):
                 client.save({CONANFILE: conanfile})
                 client.run("export %s lasote/stable" % path_dot())
                 client.run("install bash/0.1@lasote/stable --build")  # Link will fail, but run
-                self.assertIn("Microsoft (R) Incremental Linker Version", client.user_io.out)
+                self.assertIn("Microsoft (R) Incremental Linker Version", client.out)
 
     @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
     @unittest.skipIf(Version(conan_version) < Version("1.0.0-beta.1"), "Required modern Conan")
@@ -98,7 +98,7 @@ class ConanBash(ConanFile):
                 client = TestClient()
                 client.save({CONANFILE: conanfile})
                 client.run("create %s bash/0.1@lasote/stable" % path_dot())
-                self.assertIn("build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/relative", client.user_io.out)
+                self.assertIn("build/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/relative", client.out)
 
     @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
     @unittest.skipIf(Version(conan_version) < Version("1.0.0-beta.1"), "Required modern Conan")
@@ -138,8 +138,8 @@ class ConanBash(ConanFile):
                 client.save({CONANFILE: conanfile}, clean_first=True)
                 client.run("export %s lasote/stable" % path_dot())
                 client.run("install bash/0.1@lasote/stable --build")
-                self.assertIn("Hello MYVAR", client.user_io.out)
-                self.assertIn("HELLO PARENT!", client.user_io.out)
+                self.assertIn("Hello MYVAR", client.out)
+                self.assertIn("HELLO PARENT!", client.out)
 
 
 class MSys2CygwinTestBuildRequiresOrderAppliedPath(BaseExeTest):
