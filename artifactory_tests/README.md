@@ -7,7 +7,7 @@ Set the following env vars adjusting the needed value, "master" branch in Conan 
 
 - `CONAN_GIT_REPO=https://github.com/conan-io/conan.git`
 - `CONAN_GIT_TAG=develop` # Can be any git reference
-- `ARTIFACTORY_VERSION=6.9.1`
+- `ARTIFACTORY_VERSION=6.9.1` or `latest`
 - `ART_LICENSE=validlicenseofartifactoryPRO`
 
 Run:
