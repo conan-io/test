@@ -22,9 +22,11 @@ if(branch != "master"){ // TODO: REMOVE THIS WHEN 1.15 IS RELEASED!
         node("Linux") {
             stage("Testing revisions with Artifactory"){
                 checkout scm
-                withEnv(["CONAN_GIT_TAG=${branch}".toString(), 'CONAN_GIT_REPO=https://github.com/conan-io/conan.git', "ARTIFACTORY_VERSION=6.9.1"]) {
-                    withCredentials([string(credentialsId: 'ART_LICENSE', variable: 'ART_LICENSE')]) {
-                         sh(script: "cd artifactory_tests && ./run_tests.sh")
+                for (arti_version in ["6.9.0", "6.10.6", "latest"]){
+                    withEnv(["CONAN_GIT_TAG=${branch}".toString(), 'CONAN_GIT_REPO=https://github.com/conan-io/conan.git', "ARTIFACTORY_VERSION=${arti_version}"]) {
+                        withCredentials([string(credentialsId: 'ART_LICENSE', variable: 'ART_LICENSE')]) {
+                             sh(script: "cd artifactory_tests && ./run_tests.sh")
+                        }
                     }
                 }
             }
