@@ -27,9 +27,7 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
     pip_installs = ["pip install -r conan_tests/requirements.txt"]
     if platform.system() == "Windows":
         pip_installs.append("python.exe -m pip install --upgrade pip")
-        if pyver != "py34":
-            # Otherwise it fails the python setup.py install downloading stuff
-            pip_installs.append('pip install requests["security"]')
+        pip_installs.append('pip install requests["security"]')
         if pyver == "py36" and conan_branch != "0.30.3":
             pip_installs.append("pip install scons")
 
