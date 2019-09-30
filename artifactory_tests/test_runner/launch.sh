@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-until curl -Iv $ARTIFACTORY_DEFAULT_URL/api/system/ping --fail
+until curl -v $ARTIFACTORY_DEFAULT_URL/api/system/ping --fail
 do
    echo "Artifactory not ready... waiting"
    sleep 4
