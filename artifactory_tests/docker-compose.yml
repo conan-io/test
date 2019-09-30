@@ -1,10 +1,10 @@
 version: "2"
 services:
   artifactory:
-    #expose:
-    #  - 8090
-    #ports:
-    #  - 8090:8081
+    expose:
+      - 8090
+    ports:
+      - 8090:8081
     build:
       context: ./artifactory
       args:
