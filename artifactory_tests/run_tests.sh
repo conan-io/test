@@ -11,7 +11,7 @@ fi
 
 
 echo "Building containers..."
-docker-compose build --no-cache
+docker-compose build
 docker-compose pull
 echo "Launching containers..."
 docker-compose up -d
