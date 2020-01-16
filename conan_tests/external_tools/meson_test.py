@@ -14,11 +14,11 @@ from conans.util.files import mkdir, load
 from nose_parameterized import parameterized
 
 
+@unittest.skipIf(sys.version_info[0] < 3, "Meson is not available in Python 2")
 class PkgConfigGeneratorTest(unittest.TestCase):
 
     
     @parameterized.expand([(True, ), (False, )])
-    @unittest.skipIf(sys.version_info[0] < 3 or sys.version_info[1] < 5, "meson > py 3.4")
     def basic_test(self, no_copy_source):
         client = TestClient()
         conanfile = textwrap.dedent("""
@@ -59,7 +59,6 @@ class PkgConfigGeneratorTest(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(build_folder, "conanbuildinfo.txt")))
         self.assertEqual(load(os.path.join(build_folder, "package/include/header.h")), "//myheader.h")
 
-    @unittest.skipIf(sys.version_info[0] < 3 or sys.version_info[1] < 5, "meson > py 3.4")
     def test_base(self):
         client = TestClient(path_with_spaces=False)
         self._export(client, "LIB_C", [])
