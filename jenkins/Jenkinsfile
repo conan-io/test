@@ -48,7 +48,7 @@ try{
         def slave = x
         for (y in pyvers) {
             def pyver = y
-            builders["${slave} - ${pyver}"] = {
+            //builders["${slave} - ${pyver}"] = {
                 node(slave) {
                     stage("${slave} - ${pyver}"){
                         step ([$class: 'WsCleanup'])
@@ -85,10 +85,10 @@ try{
                         }
                     }
                 }
-            }
+            //}
         }
     }
-    parallel builders
+    //parallel builders
 
 }
 catch(e){
