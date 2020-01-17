@@ -58,10 +58,10 @@ try{
                         def workdir = "${base_dir}/${bn}/${pyver}"
 
                         if(slave == "Linux"){
-                            //sh(script: "docker pull conanio/conantests")
-                            //docker.image('conanio/conantests').inside("-e CONAN_USER_HOME=${WORKSPACE}") {
-                            //    sh(script: "python ${runner} ${modules} ${pyver} ${branch} ${workdir} --num_cores=${numcores}")
-                            //}
+                            sh(script: "docker pull conanio/conantests")
+                            docker.image('conanio/conantests').inside("-e CONAN_USER_HOME=${WORKSPACE}") {
+                                sh(script: "python ${runner} ${modules} ${pyver} ${branch} ${workdir} --num_cores=${numcores}")
+                            }
                         }
                         else if(slave == "Windows"){
                             try{
