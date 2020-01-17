@@ -1,7 +1,7 @@
 echo "LAUNCHING: ${env.JOB_NAME}"
 def modules = ["conan_tests"]
 def slaves = ['Linux', 'Windows', 'Macos']
-def pyvers = ['py36', 'py27']
+def pyvers = ['py37', 'py27']
 def numcores = "1"
 def branch = env.JOB_NAME.split("_")[1].replaceAll("-", "/")
 def build_short = env.JOB_NAME.split("_")[1].replaceAll("\\.", "").replaceAll("-", "").replace("release", "rl")
