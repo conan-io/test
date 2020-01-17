@@ -60,6 +60,9 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
     env["CONAN_LOGGING_LEVEL"] = "50" if platform.system() == "Darwin" else "50"
     env['PYTHON_EGG_CACHE'] = os.path.join(tmp_folder, "egg")
     env['PYTHONPATH'] = os.path.join(tmp_folder, "conan_p")
+    if pyver.startswith("py2"):
+        env["USE_UNSUPPORTED_CONAN_WITH_PYTHON_2"] = "True"
+
     os.mkdir(env['PYTHON_EGG_CACHE'])
     with environment_append(env):
         print(command)
