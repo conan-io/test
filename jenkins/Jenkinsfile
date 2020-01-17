@@ -15,7 +15,7 @@ echo "-- win_tmp_base: ${win_tmp_base}"
 def rest_tmp_base = "/tmp/"
 def runner = "jenkins/runner.py"
 
-/*
+
 // First test Artifactory
 try{
     node("LinuxSlave") {
@@ -40,7 +40,7 @@ catch(e){
     slackSend (color: '#FF0000', message: summary)
     throw e
 }
-*/
+
 
 def builders = [:]
 try{
