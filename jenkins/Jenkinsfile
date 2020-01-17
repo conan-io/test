@@ -60,6 +60,7 @@ try{
                         if(slave == "Linux"){
                             sh(script: "docker pull conanio/conantests")
                             docker.image('conanio/conantests').inside("-e CONAN_USER_HOME=${WORKSPACE}") {
+                                sh(script: "whoami")
                                 sh(script: "python ${runner} ${modules} ${pyver} ${branch} ${workdir} --num_cores=${numcores}")
                             }
                         }
