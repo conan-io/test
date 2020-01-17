@@ -35,9 +35,6 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
     else:
         pip_installs.append("pip install --upgrade pip")
 
-    # Install meson outside the virtualenv
-    run("sudo pip install meson")
-
     #  --nocapture
     command = "virtualenv --python \"{pyenv}\" \"{venv_dest}\" && " \
               "{source_cmd} \"{venv_exe}\" && " \
