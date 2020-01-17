@@ -41,7 +41,7 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
               "{pip_installs} && " \
               "cd {tmp_folder} && git clone --depth 1 " \
               "https://github.com/conan-io/conan.git -b {branch} conan_p && " \
-              "cd conan_p && python setup.py install && cd {cwd} && " \
+              "cd conan_p && pip install . && cd {cwd} && " \
               "conan --version && conan --help && " \
               "nosetests {module_path} --verbosity=2 " \
               "{multiprocess} ".format(
