@@ -24,7 +24,7 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
         multiprocess = ("--processes=%s --process-timeout=1000 "
                         "--process-restartworker" % num_cores)
 
-    pip_installs = ["pip install -r conan_tests/requirements.txt"]
+    pip_installs = ["pip install --user -r conan_tests/requirements.txt"]
     if platform.system() == "Windows":
         pip_installs.append("python.exe -m pip install --upgrade pip")
         pip_installs.append("pip install setuptools!=41.5.0") # FIXME: https://github.com/pypa/setuptools/issues/1891
