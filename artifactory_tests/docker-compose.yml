@@ -10,19 +10,13 @@ services:
       context: ./artifactory
       args:
         - artifactory_version=$ARTIFACTORY_VERSION
-    healthcheck:
-      test: wget --quiet --tries=1 --spider http://localhost:8081/artifactory/api/system/ping || exit 1
-      interval: 10s
-      timeout: 10s
-      retries: 15
 
   test_runner:
     command: '/bin/bash'
     build:
       context: test_runner
     depends_on:
-      artifactory:
-        condition: service_healthy
+      - artifactory
     environment:
       - CONAN_GIT_REPO=$CONAN_GIT_REPO
       - CONAN_GIT_TAG=$CONAN_GIT_TAG

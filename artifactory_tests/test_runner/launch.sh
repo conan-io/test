@@ -10,7 +10,7 @@ done
 
 echo "Artifactory responded OK!"
 curl -uadmin:password -XGET $ARTIFACTORY_DEFAULT_URL/api/system/version
-curl -uadmin:password --output /dev/null -XPOST "http://artifactory:8081/artifactory/api/system/licenses" -H "Content-type: application/json" -d '{ "licenseKey" : "'"$ART_LICENSE"'"}'
+curl -uadmin:password --output /dev/null -XPOST "$ARTIFACTORY_DEFAULT_URL/api/system/licenses" -H "Content-type: application/json" -d '{ "licenseKey" : "'"$ART_LICENSE"'"}'
 
 echo "Let's clone Conan"
 git clone $CONAN_GIT_REPO conan_sources
