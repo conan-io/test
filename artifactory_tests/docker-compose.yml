@@ -9,8 +9,6 @@ services:
       context: ./artifactory
       args:
         - artifactory_version=$ARTIFACTORY_VERSION
-    environment:
-      - ART_LICENSE=$ART_LICENSE
   test_runner:
     command: '/bin/bash'
     build:
@@ -20,3 +18,4 @@ services:
     environment:
       - CONAN_GIT_REPO=$CONAN_GIT_REPO
       - CONAN_GIT_TAG=$CONAN_GIT_TAG
+      - ART_LICENSE=$ART_LICENSE
