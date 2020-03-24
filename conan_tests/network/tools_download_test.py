@@ -14,7 +14,7 @@ class ToolsDownloadTest(unittest.TestCase):
             tools.download("https://raw.githubusercontent.com/conan-io/conan/develop/README.rst",
                            "README.rst")
             content = load(os.path.join(tmp_folder, "README.rst"))
-            self.assertIn(":alt: Conan develop coverage", content)
+            self.assertIn("Homepage: https://conan.io/", content)
 
     def test_download_zip(self):
         tmp_folder = temp_folder()
