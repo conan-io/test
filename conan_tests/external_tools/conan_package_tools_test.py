@@ -11,7 +11,7 @@ from conans import __version__ as conan_version
 class ConanPackageToolsTest(BaseExeTest):
 
     @unittest.skipIf(sys.version_info[0:2] == (3, 4), "No py3.4")
-    @unittest.skipIf(conan_version < "1.3.0", "Required modern Conan")
+    @unittest.skip("conan-package-tools will never work with non-released Conan versions.")
     def test_package_tools(self):
         run("pip install tabulate")  # only package tools dep
         run("pip install conan_package_tools --no-dependencies")  # Install latest
