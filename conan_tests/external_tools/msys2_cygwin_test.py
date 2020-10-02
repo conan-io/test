@@ -59,6 +59,7 @@ class ConanBash(ConanFile):
                 conanfile = '''
 import os
 from conans import ConanFile, tools, __version__ as conan_version
+from conans.model.version import Version
 
 class ConanBash(ConanFile):
     name = "bash"
@@ -67,7 +68,7 @@ class ConanBash(ConanFile):
 
     def build(self):
         vs_path = tools.vcvars_dict(self.settings)["PATH"]
-        if conan_version >= "1.7.0":
+        if Version(conan_version) >= Version("1.7.0"):
             vs_path = os.pathsep.join(vs_path)
         tools.run_in_windows_bash(self, "link", env={"PATH": vs_path})
 

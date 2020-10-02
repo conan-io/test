@@ -29,8 +29,7 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
         pip_installs.append("python.exe -m pip install --upgrade pip")
         pip_installs.append("pip install setuptools!=41.5.0") # FIXME: https://github.com/pypa/setuptools/issues/1891
         pip_installs.append('pip install requests["security"]')
-        if pyver == "py36" and conan_branch != "0.30.3":
-            pip_installs.append("pip install scons")
+        pip_installs.append("pip install scons")
 
     else:
         pip_installs.append("pip install --upgrade pip")
