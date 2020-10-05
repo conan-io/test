@@ -70,7 +70,7 @@ class ConanBash(ConanFile):
         vs_path = tools.vcvars_dict(self.settings)["PATH"]
         if Version(conan_version) >= Version("1.7.0"):
             vs_path = os.pathsep.join(vs_path)
-        tools.run_in_windows_bash(self, "link", env={"PATH": vs_path})
+        tools.run_in_windows_bash(self, "link", subsystem="msys2", env={"PATH": vs_path})
 
 '''
                 client = TestClient()
