@@ -34,13 +34,14 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
     else:
         pip_installs.append("pip install --upgrade pip")
 
+    change_dir = "/d " if platform.system() == "Windows" else ""
     #  --nocapture
     command = "virtualenv --python \"{pyenv}\" \"{venv_dest}\" && " \
               "{source_cmd} \"{venv_exe}\" && " \
               "{pip_installs} && " \
-              "cd {tmp_folder} && git clone --depth 1 " \
+              "cd {change_dir}{tmp_folder} && git clone --depth 1 " \
               "https://github.com/conan-io/conan.git -b {branch} conan_p && " \
-              "cd conan_p && pip install . && cd {cwd} && " \
+              "cd conan_p && pip install . && cd {change_dir}{cwd} && " \
               "conan --version && conan --help && " \
               "nosetests {module_path} --verbosity=2 " \
               "{multiprocess} ".format(
@@ -53,7 +54,8 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
                                        "source_cmd": source_cmd,
                                        "multiprocess": multiprocess,
                                        "pip_installs": " && ".join(pip_installs),
-                                       "cwd": os.getcwd()})
+                                       "cwd": os.getcwd(),
+                                       "change_dir": change_dir})
 
     env = get_environ(tmp_folder)
     env["CONAN_LOGGING_LEVEL"] = "50" if platform.system() == "Darwin" else "50"
