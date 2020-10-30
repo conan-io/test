@@ -30,6 +30,7 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
         pip_installs.append("pip install setuptools!=41.5.0") # FIXME: https://github.com/pypa/setuptools/issues/1891
         pip_installs.append('pip install requests["security"]')
         pip_installs.append("pip install scons")
+        pip_installs.append("pip install pytest")
 
     else:
         pip_installs.append("pip install --upgrade pip")
