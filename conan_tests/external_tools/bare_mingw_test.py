@@ -6,7 +6,7 @@ from conan_tests.test_regression.utils.base_exe import path_dot
 from conans import tools
 from conans.model.version import Version
 from conans.test.utils.tools import TestClient, TestServer
-from conans.test.utils.cpp_test_files import cpp_hello_conan_files
+from conans.test.assets.cpp_test_files import cpp_hello_conan_files
 from conans import __version__ as client_version
 
 

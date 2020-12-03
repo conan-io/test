@@ -9,7 +9,7 @@ from conans import tools
 from conans.model.ref import ConanFileReference
 from conans.model.version import Version
 from conans.paths import CONANFILE
-from conans.test.utils.cpp_test_files import cpp_hello_conan_files
+from conans.test.assets.cpp_test_files import cpp_hello_conan_files
 from conans.test.utils.tools import TestClient
 from conans.tools import unix_path
 from conans import __version__ as conan_version
