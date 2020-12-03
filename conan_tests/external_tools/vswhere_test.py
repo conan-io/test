@@ -10,7 +10,7 @@ from conans.model.version import Version
 from conans import __version__ as client_version
 from conans.model import settings
 from conans.test.utils.tools import TestClient
-from conans.test.utils.visual_project_files import get_vs_project_files
+from conans.test.assets.visual_project_files import get_vs_project_files
 
 
 class vswhereTest(unittest.TestCase):
