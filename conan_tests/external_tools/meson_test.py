@@ -8,7 +8,7 @@ from future.moves import sys
 
 from conan_tests.test_regression.utils.base_exe import path_dot
 from conans.paths import CONANFILE
-from conans.test.utils.cpp_test_files import cpp_hello_conan_files
+from conans.test.assets.cpp_test_files import cpp_hello_conan_files
 from conans.test.utils.tools import TestClient
 from conans.util.files import mkdir, load
 from nose_parameterized import parameterized
