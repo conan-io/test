@@ -18,6 +18,5 @@ cd conan_sources
 git checkout $CONAN_GIT_TAG
 echo "Let's install Conan as editable"
 pip3 install -e . && pip3 install -r conans/requirements_dev.txt
-rm __init__.py
 echo "Let's run the tests"
 nosetests -w conans -A "artifactory_ready" -v
