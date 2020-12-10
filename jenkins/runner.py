@@ -31,7 +31,7 @@ def run_tests(module_path, conan_branch, pyver, tmp_folder, num_cores=3):
         pip_installs.append('pip install requests["security"]')
         pip_installs.append("pip install scons")
         pip_installs.append("pip install pytest")
-        if (pyver!="py27"):
+        if pyver != "py27":
             pip_installs.append("pip install meson")
     else:
         pip_installs.append("pip install --upgrade pip")
