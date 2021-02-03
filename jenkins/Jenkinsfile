@@ -1,7 +1,7 @@
 echo "LAUNCHING: ${env.JOB_NAME}"
 def modules = ["conan_tests"]
 def slaves = ['Linux', 'Windows']
-def pyvers = ['py37', 'py27']
+def pyvers = ['py37']
 def numcores = "1"
 def branch = env.JOB_NAME.split("_")[1].replaceAll("-", "/")
 def build_short = env.JOB_NAME.split("_")[1].replaceAll("\\.", "").replaceAll("-", "").replace("release", "rl")
@@ -15,6 +15,9 @@ echo "-- win_tmp_base: ${win_tmp_base}"
 def rest_tmp_base = "/tmp/"
 def runner = "jenkins/runner.py"
 
+if (branch!="develop2") {
+    pyvers.add('py27')
+}
 
 // First test Artifactory
 try{
