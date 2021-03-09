@@ -12,6 +12,7 @@ from conans.test.assets.cpp_test_files import cpp_hello_conan_files
 from conans.test.utils.tools import TestClient
 from conans.util.files import mkdir, load
 from nose_parameterized import parameterized
+from conan_tests.conf import msys2_in_path
 
 
 @unittest.skipIf(sys.version_info[0] < 3, "Meson is not available in Python 2")
@@ -60,50 +61,51 @@ class PkgConfigGeneratorTest(unittest.TestCase):
         self.assertEqual(load(os.path.join(build_folder, "package/include/header.h")), "//myheader.h")
 
     def test_base(self):
-        client = TestClient(path_with_spaces=False)
-        self._export(client, "LIB_C", [])
-        self._export(client, "LIB_B", ["LIB_C"])
-        self._export(client, "LIB_B2", [])
-        self._export(client, "LIB_A", ["LIB_B", "LIB_B2"])
+        with msys2_in_path():
+            client = TestClient(path_with_spaces=False)
+            self._export(client, "LIB_C", [])
+            self._export(client, "LIB_B", ["LIB_C"])
+            self._export(client, "LIB_B2", [])
+            self._export(client, "LIB_A", ["LIB_B", "LIB_B2"])
 
-        consumer = textwrap.dedent("""
-            from conans import ConanFile, Meson
+            consumer = textwrap.dedent("""
+                from conans import ConanFile, Meson
 
-            class ConanFileToolsTest(ConanFile):
-                generators = "pkg_config"
-                requires = "LIB_A/0.1@conan/stable"
-                settings = "os", "compiler", "build_type"
+                class ConanFileToolsTest(ConanFile):
+                    generators = "pkg_config"
+                    requires = "LIB_A/0.1@conan/stable"
+                    settings = "os", "compiler", "build_type"
 
-                def build(self):
-                    meson = Meson(self)
-                    meson.configure()
-                    meson.build()
-            """)
-        meson_build = textwrap.dedent("""
-            project('conan_hello', 'c')
-            liba = dependency('LIB_A', version : '>=0')
-            executable('demo', 'main.c', dependencies: [liba])
-            """)
+                    def build(self):
+                        meson = Meson(self)
+                        meson.configure()
+                        meson.build()
+                """)
+            meson_build = textwrap.dedent("""
+                project('conan_hello', 'c')
+                liba = dependency('LIB_A', version : '>=0')
+                executable('demo', 'main.c', dependencies: [liba])
+                """)
 
-        main_c = textwrap.dedent("""
-            #include "helloLIB_A.h"
-            int main(){
-            helloLIB_A();
-            }
-            """)
+            main_c = textwrap.dedent("""
+                #include "helloLIB_A.h"
+                int main(){
+                helloLIB_A();
+                }
+                """)
 
-        client.save({CONANFILE: consumer,
-                     "meson.build": meson_build,
-                     "main.c": main_c}, clean_first=True)
-        mkdir(os.path.join(client.current_folder, "build"))
-        client.current_folder = os.path.join(client.current_folder, "build")
-        client.run("install .. --build")
+            client.save({CONANFILE: consumer,
+                        "meson.build": meson_build,
+                        "main.c": main_c}, clean_first=True)
+            mkdir(os.path.join(client.current_folder, "build"))
+            client.current_folder = os.path.join(client.current_folder, "build")
+            client.run("install .. --build")
 
-        client.run("build .. --source-folder ..")
-        command = "demo" if platform.system() == "Windows" else "./demo"
-        client.run_command(command)
-        self.assertEqual(['Hello LIB_A', 'Hello LIB_B', 'Hello LIB_C', 'Hello LIB_B2'],
-                         str(client.out).splitlines()[-4:])
+            client.run("build .. --source-folder ..")
+            command = "demo" if platform.system() == "Windows" else "./demo"
+            client.run_command(command)
+            self.assertEqual(['Hello LIB_A', 'Hello LIB_B', 'Hello LIB_C', 'Hello LIB_B2'],
+                            str(client.out).splitlines()[-4:])
 
     def _export(self, client, libname, depsname):
         files = cpp_hello_conan_files(libname, "0.1",
