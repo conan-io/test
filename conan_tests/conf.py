@@ -6,7 +6,7 @@ import nose
 from conans import tools
 from contextlib import contextmanager
 
-CONAN_MINGW_PATH = os.getenv("CONAN_MINGW_PATH", "C:/Mingw/bin")
+CONAN_MINGW_PATH = os.getenv("CONAN_MINGW_PATH", "C:/msys64/mingw64/bin")
 
 CONAN_MSYS2_PATH = os.getenv("CONAN_MSYS2_PATH", "C:/msys64/usr/bin")
 CONAN_MSYS2_PATH_SPACES = os.getenv("CONAN_MSYS2_PATH_SPACES", "C:/msys64/usr/b in")
