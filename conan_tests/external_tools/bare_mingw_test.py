@@ -1,5 +1,6 @@
 import os
 import unittest
+import platform
 
 from conan_tests.conf import mingw_in_path
 from conan_tests.test_regression.utils.base_exe import path_dot
@@ -10,6 +11,7 @@ from conans.test.assets.cpp_test_files import cpp_hello_conan_files
 from conans import __version__ as client_version
 
 
+@unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
 @unittest.skipIf(Version(client_version) < Version("0.31"), 'Only >= 1.0 version')
 class MinGWDiamondTest(unittest.TestCase):
 
@@ -60,6 +62,7 @@ class MinGWDiamondTest(unittest.TestCase):
                                 str(self.client.out).splitlines()[-6:])
 
 
+@unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
 @unittest.skipIf(Version(client_version) < Version("0.31"), 'Only >= 1.0 version')        
 class BuildMingwTest(unittest.TestCase):
 
