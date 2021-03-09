@@ -1,5 +1,7 @@
 import unittest
 
+from future.moves import sys
+
 from conans import tools
 from conans.test.utils.test_files import temp_folder
 import os
@@ -7,7 +9,7 @@ from conans.util.files import load
 
 
 # FIXME: check why this fails in Py2
-@unittest.skipIf(sys.version_info.major!=3, reason="Failing in Py2")
+@unittest.skipIf(sys.version_info[0] < 3, "Fails in Py2")
 class ToolsDownloadTest(unittest.TestCase):
 
     def test_download_github_raw(self):
