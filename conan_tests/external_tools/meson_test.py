@@ -12,7 +12,7 @@ from conans.test.assets.cpp_test_files import cpp_hello_conan_files
 from conans.test.utils.tools import TestClient
 from conans.util.files import mkdir, load
 from nose_parameterized import parameterized
-from conan_tests.conf import msys2_in_path
+from conan_tests.conf import mingw_in_path, msys2_in_path
 
 
 @unittest.skipIf(sys.version_info[0] < 3, "Meson is not available in Python 2")
@@ -61,7 +61,7 @@ class PkgConfigGeneratorTest(unittest.TestCase):
         self.assertEqual(load(os.path.join(build_folder, "package/include/header.h")), "//myheader.h")
 
     def test_base(self):
-        with msys2_in_path():
+        with mingw_in_path():
             client = TestClient(path_with_spaces=False)
             self._export(client, "LIB_C", [])
             self._export(client, "LIB_B", ["LIB_C"])
