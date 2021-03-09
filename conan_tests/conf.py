@@ -35,9 +35,6 @@ def cygwin_in_path():
 
 
 def _in_path_win(path):
-    if platform.system() != "Windows":
-        raise nose.SkipTest('Only windows test')
-
     path = os.pathsep.join([path, os.environ["PATH"]])
     with tools.environment_append({"PATH": path}):
         yield
