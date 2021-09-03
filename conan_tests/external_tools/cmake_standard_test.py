@@ -22,7 +22,7 @@ class Conan(ConanFile):
     version = "1.0"
     settings = "os", "compiler", "arch", "build_type", "cppstd"
     exports_sources = "*"
-    build_requires = "cmake_installer/2.8.12@conan/stable"
+    build_requires = "cmake/3.16.9"
     generators = "cmake"
 
     def build(self):
