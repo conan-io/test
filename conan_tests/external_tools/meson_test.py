@@ -3,8 +3,7 @@ import platform
 import textwrap
 import unittest
 
-import six
-from future.moves import sys
+import sys
 
 from conan_tests.test_regression.utils.base_exe import path_dot
 from conans.paths import CONANFILE

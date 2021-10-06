@@ -1,6 +1,6 @@
 import unittest
 
-from future.moves import sys
+import sys
 
 from conans import tools
 from conans.test.utils.test_files import temp_folder
