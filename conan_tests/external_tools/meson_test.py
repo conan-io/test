@@ -2,8 +2,9 @@ import os
 import platform
 import textwrap
 import unittest
-
 import sys
+
+import six
 
 from conan_tests.test_regression.utils.base_exe import path_dot
 from conans.paths import CONANFILE
