@@ -147,6 +147,7 @@ class MSys2CygwinTestBuildRequiresOrderAppliedPath(BaseExeTest):
                            ("msys2_installer/latest@bincrafters/stable",)])
     @unittest.skipIf(platform.system() != "Windows", "ONLY WINDOWS")
     @unittest.skipIf(Version(conan_version) < Version("1.0.0-beta.1"), "Required modern Conan")
+    @unittest.skip("Bintray does not exist any more, we have to update all these tests.")
     def test_base(self, subsystem_require):
 
         run("conan remote remove conan-testuite ", ignore_error=True)
