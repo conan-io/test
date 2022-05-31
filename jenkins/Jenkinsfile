@@ -15,10 +15,6 @@ echo "-- win_tmp_base: ${win_tmp_base}"
 def rest_tmp_base = "/tmp/"
 def runner = "jenkins/runner.py"
 
-if (branch!="develop2") {
-    pyvers.add('py27')
-}
-
 // First test Artifactory
 try{
     node("LinuxSlave") {
