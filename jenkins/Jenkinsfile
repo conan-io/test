@@ -41,7 +41,7 @@ catch(e){
 }
 
 // these tests are not prepared for Conan 2.0, omit them
-if branch != "develop2"
+if (branch != "develop2")
 {
     def builders = [:]
     try{
