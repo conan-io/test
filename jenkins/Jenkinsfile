@@ -20,7 +20,8 @@ try{
     node("LinuxSlave") {
         stage("Testing revisions with Artifactory"){
             checkout scm
-            for (arti_version in ["latest", "7.47.12", "7.37.17" , "7.27.10", "7.17.5", "7.2.1", "6.18.1", "6.9.0"]){
+            def arti_versions = (branch != "develop2") ? ["latest", "7.47.12", "7.37.17" , "7.27.10", "7.17.5", "7.2.1", "6.18.1", "6.9.0"] : ["latest"]
+            for (arti_version in arti_versions){
                 echo "Testing Artifactory ${arti_version} with Conan '${branch}'"
                 withEnv(["CONAN_GIT_TAG=${branch}".toString(), 'CONAN_GIT_REPO=https://github.com/conan-io/conan.git', "ARTIFACTORY_VERSION=${arti_version}"]) {
                     withCredentials([string(credentialsId: 'ART_LICENSE', variable: 'ART_LICENSE')]) {
