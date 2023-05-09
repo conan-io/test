@@ -47,46 +47,48 @@ class vswhereTest(unittest.TestCase):
         self.assertEqual(path, None)
 
     def vswhere_test(self):
-        # products and legacy not allowed
-        self.assertRaises(ConanException, tools.vswhere, products=["*"], legacy=True)
+        # add latest CMake to path to support latest VS CMake generators
+        with tools.environment_append({"PATH": "C:/cmake/cmake-3.19.7-win64-x64/bin"}):
+            # products and legacy not allowed
+            self.assertRaises(ConanException, tools.vswhere, products=["*"], legacy=True)
 
-        # Detect only one product (VS Community 15) as vswhere default detection
-        nproducts = len(tools.vswhere())
-        self.assertEqual(nproducts, self.modern_products)
+            # Detect only one product (VS Community 15) as vswhere default detection
+            nproducts = len(tools.vswhere())
+            self.assertEqual(nproducts, self.modern_products)
 
-        # Detect only modern products (VS Community 15 & BuildTools 15)
-        products = tools.vswhere(products=["*"])
-        nproducts = len(products)
-        
-        self.assertEqual(nproducts, self.all_modern_products)
-        installation_paths = [product["installationPath"] for product in products]
-        self.assertTrue(any("Community" in install_path for install_path in installation_paths))
-        self.assertTrue(any("BuildTools" in install_path for install_path in installation_paths))
+            # Detect only modern products (VS Community 15 & BuildTools 15)
+            products = tools.vswhere(products=["*"])
+            nproducts = len(products)
+            
+            self.assertEqual(nproducts, self.all_modern_products)
+            installation_paths = [product["installationPath"] for product in products]
+            self.assertTrue(any("Community" in install_path for install_path in installation_paths))
+            self.assertTrue(any("BuildTools" in install_path for install_path in installation_paths))
 
-        # Detect also legacy products but no modern BuildTools
-        products = tools.vswhere(legacy=True)
-        nproducts = len(products)
+            # Detect also legacy products but no modern BuildTools
+            products = tools.vswhere(legacy=True)
+            nproducts = len(products)
 
-        self.assertEqual(nproducts, self.modern_and_legacy_products)
-        installation_paths = [product["installationPath"] for product in products]
-        self.assertTrue(any("Community" in install_path for install_path in installation_paths))
-        self.assertTrue(any("Microsoft Visual Studio 14.0" in install_path for install_path in installation_paths))
+            self.assertEqual(nproducts, self.modern_and_legacy_products)
+            installation_paths = [product["installationPath"] for product in products]
+            self.assertTrue(any("Community" in install_path for install_path in installation_paths))
+            self.assertTrue(any("Microsoft Visual Studio 14.0" in install_path for install_path in installation_paths))
 
-        # Detect all installed products
-        products = tools.vswhere(products=["*"])
-        products += tools.vswhere(legacy=["*"])
-        seen_products = []
-        for product in products:
-            if product not in seen_products:
-                seen_products.append(product)
-        products = seen_products
-        nproducts = len(products)
+            # Detect all installed products
+            products = tools.vswhere(products=["*"])
+            products += tools.vswhere(legacy=["*"])
+            seen_products = []
+            for product in products:
+                if product not in seen_products:
+                    seen_products.append(product)
+            products = seen_products
+            nproducts = len(products)
 
-        self.assertEqual(nproducts, self.all_products)
-        installation_paths = [product["installationPath"] for product in products]
-        self.assertTrue(any("Community" in install_path for install_path in installation_paths))
-        self.assertTrue(any("BuildTools" in install_path for install_path in installation_paths))
-        self.assertTrue(any("Microsoft Visual Studio 14.0" in install_path for install_path in installation_paths))
+            self.assertEqual(nproducts, self.all_products)
+            installation_paths = [product["installationPath"] for product in products]
+            self.assertTrue(any("Community" in install_path for install_path in installation_paths))
+            self.assertTrue(any("BuildTools" in install_path for install_path in installation_paths))
+            self.assertTrue(any("Microsoft Visual Studio 14.0" in install_path for install_path in installation_paths))
 
     def vs_installation_path_test(self):
         # Default behaviour
