@@ -23,9 +23,9 @@ class vswhereTest(unittest.TestCase):
     #   - VS 2022
     modern_products = 2 # 2017 or higher versions without BuildTools -> vswhere()
     all_modern_products = 3 # 2017 or higher versions with BuildTools -> vswhere(products=["*"])
-    modern_and_legacy_products = 2 # 2017 and lower versions (without BuildTools) -> vswhere(legacy=True)
+    modern_and_legacy_products = 3 # 2017 and lower versions (without BuildTools) -> vswhere(legacy=True)
     only_legacy_products = 1
-    all_products = 3
+    all_products = 4
 
     def setUp(self):
         if platform.system() != "Windows":
