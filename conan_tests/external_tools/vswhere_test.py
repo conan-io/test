@@ -20,7 +20,8 @@ class vswhereTest(unittest.TestCase):
     #   - VS Community 14 (2015)
     #
     #   - BuildTools 15 (2017) OR VS Community 15 (2017)
-    modern_products = 1 # 2017 or higher versions without BuildTools -> vswhere()
+    #   - VS 2022
+    modern_products = 2 # 2017 or higher versions without BuildTools -> vswhere()
     all_modern_products = 2 # 2017 or higher versions with BuildTools -> vswhere(products=["*"])
     modern_and_legacy_products = 2 # 2017 and lower versions (without BuildTools) -> vswhere(legacy=True)
     only_legacy_products = 1
