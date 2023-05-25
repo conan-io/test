@@ -26,7 +26,28 @@ try{
                 withEnv(["CONAN_GIT_TAG=${branch}".toString(), 'CONAN_GIT_REPO=https://github.com/conan-io/conan.git', "ARTIFACTORY_VERSION=${arti_version}"]) {
                     withCredentials([string(credentialsId: 'ART_LICENSE', variable: 'ART_LICENSE')]) {
                          lock(label: 'ArtifactoryRunning', quantity: 1) {
-                             sh(script: "cd artifactory_tests && ./run_tests.sh")
+                            try {
+                                dir('artifactory_tests') {
+                                    sh(script: 'docker stop artifactory || true')
+                                    sh(script: 'docker stop test_runner || true')
+                                    sh(script: 'docker rm artifactory || true')
+                                    sh(script: 'docker rm test_runner || true')
+                                    sh(script: 'docker network rm tests_network || true')   
+                            
+                                    sh(script: 'docker network create tests_network')
+                                    sh(script: "docker run --name artifactory --net tests_network -d -p 8081:8081 -p 8082:8082 releases-docker.jfrog.io/jfrog/artifactory-pro:${ARTIFACTORY_VERSION} my_artifactory")
+                                    sh(script: "docker build -t my_test_runner ./test_runner")
+                                    sh(script: "docker run -e CONAN_GIT_REPO=${CONAN_GIT_REPO} -e CONAN_GIT_TAG=${CONAN_GIT_TAG} --net tests_network --name test_runner my_test_runner ./launch.sh")
+                                    //sh(script: 'docker logs -f test_runner')
+                                }
+                            }
+                            finally {
+                                sh(script: 'docker stop artifactory || true')
+                                sh(script: 'docker stop test_runner || true')
+                                sh(script: 'docker rm artifactory || true')
+                                sh(script: 'docker rm test_runner || true')
+                                sh(script: 'docker network rm tests_network || true')                                
+                            }
                          }
                     }
                 }
