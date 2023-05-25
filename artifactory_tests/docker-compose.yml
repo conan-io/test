@@ -4,10 +4,9 @@ services:
   artifactory:
     #expose:
     #  - 8090
-    ports:
-      #  - 8090:8081
-      - 8081:8081
-      - 8082:808
+    #ports:
+    #  - 8090:8081
+
     build:
       context: ./artifactory
       args:
