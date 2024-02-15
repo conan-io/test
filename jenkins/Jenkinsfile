@@ -26,9 +26,7 @@ try{
                 echo "Testing Artifactory ${arti_version} with Conan '${branch}'"
                 withEnv(["CONAN_GIT_TAG=${branch}".toString(), 'CONAN_GIT_REPO=https://github.com/conan-io/conan.git', "ARTIFACTORY_VERSION=${arti_version}"]) {
                     withCredentials([string(credentialsId: 'NEW_ART_LICENSE', variable: 'ART_LICENSE')]) {
-                         lock(label: 'ArtifactoryRunning', quantity: 1) {
-                             sh(script: "cd artifactory_tests && ./run_tests.sh")
-                         }
+                        sh(script: "cd artifactory_tests && ./run_tests.sh")
                     }
                 }
             }
