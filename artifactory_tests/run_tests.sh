@@ -2,6 +2,9 @@
 
 set -e
 
+pip install docker-compose
+pip install docker==6.1.3
+
 function version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
 min_artifactory_version=6.9.0
 if version_gt $min_artifactory_version $ARTIFACTORY_VERSION; then
