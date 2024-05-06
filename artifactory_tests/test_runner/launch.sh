@@ -25,7 +25,7 @@ cd conan_sources
 git checkout $CONAN_GIT_TAG
 
 echo "Let's install Conan as editable"
-virtualenv tests-env
+python3 -m venv tests-env
 source tests-env/bin/activate
 pip3 install -e . && pip3 install -r conans/requirements_dev.txt && pip3 install -r conans/requirements_server.txt && pip3 install nose
 pip3 list

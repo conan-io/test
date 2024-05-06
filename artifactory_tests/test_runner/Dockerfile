@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 RUN apt-get update
-RUN apt-get install -y git python3 python3-pip curl subversion
+RUN apt-get install -y git python3 python3-pip python3-venv curl subversion
 ADD launch.sh launch.sh
 RUN chmod +x launch.sh
 ENV TESTING_REVISIONS_ENABLED="1"
