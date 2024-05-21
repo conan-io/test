@@ -31,4 +31,4 @@ pip3 install -e . && pip3 install -r conans/requirements_dev.txt && pip3 install
 pip3 list
 
 echo "Let's run the tests"
-pytest conans/test -m "artifactory_ready"
+pytest test -m "artifactory_ready"
