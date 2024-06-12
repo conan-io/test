@@ -30,5 +30,14 @@ source tests-env/bin/activate
 pip3 install -e . && pip3 install -r conans/requirements_dev.txt && pip3 install -r conans/requirements_server.txt && pip3 install nose
 pip3 list
 
+# in develop we still have tests under conans/test and
+# develop2 has them under test
 echo "Let's run the tests"
-pytest test -m "artifactory_ready"
+if [ -d "conans/test" ]; then
+    pytest conans/test -m "artifactory_ready"
+elif [ -d "test" ]; then
+    pytest test -m "artifactory_ready"
+else
+    echo "No test directory found"
+    exit 1
+fi
