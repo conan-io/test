@@ -1,24 +1,52 @@
-version: "2.1"
+version: "3.8"
 
 services:
-  artifactory:
-    #expose:
-    #  - 8090
-    #ports:
-    #  - 8090:8081
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: artifactory
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: artifactory
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U artifactory"]
+      interval: 30s
+      retries: 5
 
-    build:
-      context: ./artifactory
-      args:
-        - artifactory_version=$ARTIFACTORY_VERSION
+  artifactory:
+    image: releases-docker.jfrog.io/jfrog/artifactory-pro:${ARTIFACTORY_VERSION}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      JF_SHARED_DATABASE_TYPE: postgresql
+      JF_SHARED_DATABASE_DRIVER: org.postgresql.Driver
+      JF_SHARED_DATABASE_URL: jdbc:postgresql://postgres:5432/artifactory
+      JF_SHARED_DATABASE_USER: artifactory
+      JF_SHARED_DATABASE_PASSWORD: password
+      ARTIFACTORY_HOME: /opt/jfrog/artifactory
+      ARTIFACTORY_ADMIN_PASSWORD: password
+    ports:
+      - 8081:8081
+    volumes:
+      - artifactory_data:/var/opt/jfrog/artifactory
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/artifactory/api/system/ping"]
+      interval: 30s
+      retries: 5
 
   test_runner:
     command: "/bin/bash"
     build:
-      context: test_runner
+      context: ./test_runner
     depends_on:
       - artifactory
     environment:
       - CONAN_GIT_REPO=$CONAN_GIT_REPO
       - CONAN_GIT_TAG=$CONAN_GIT_TAG
       - ART_LICENSE=$ART_LICENSE
+
+volumes:
+  postgres_data:
+  artifactory_data:

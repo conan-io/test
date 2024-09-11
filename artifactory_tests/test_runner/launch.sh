@@ -8,11 +8,9 @@ if [ -d "tests-env" ]; then
    rm -rf tests-env
 fi
 
-until curl -v -uadmin:password $ARTIFACTORY_DEFAULT_URL/api/system/ping --fail
-do
+until curl -uadmin:password $ARTIFACTORY_DEFAULT_URL/api/system/ping --fail; do
    echo "Artifactory not ready... waiting"
-   # curl -v $ARTIFACTORY_DEFAULT_URL/api/system/ping
-   sleep 4
+   sleep 5
 done
 
 echo "Artifactory responded OK!"
