@@ -17,20 +17,18 @@ docker-compose build
 docker-compose pull
 echo "Launching containers..."
 docker-compose up -d
-echo "Waiting for Artifactory to be ready..."
-
-# Ensure that PostgreSQL and Artifactory are ready
-until curl -uadmin:password http://localhost:8081/artifactory/api/system/ping --fail; do
-   echo "Waiting for Artifactory to start..."
-   sleep 5
-done
-
 if docker-compose run test_runner ./launch.sh; then
     echo "Tests OK!"
+    echo "Fetching logs..."
+    docker-compose logs artifactory > artifactory_logs.txt
+    docker-compose logs postgres > postgres_logs.txt
     docker-compose down
     exit 0
 else
     echo "Tests Failed!"
+    echo "Fetching logs..."
+    docker-compose logs artifactory > artifactory_logs.txt
+    docker-compose logs postgres > postgres_logs.txt
     docker-compose down
     exit 99
 fi
