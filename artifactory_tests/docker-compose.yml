@@ -36,7 +36,6 @@ services:
       JF_SHARED_DATABASE_URL: jdbc:postgresql://postgres:5432/artifactory
       JF_SHARED_DATABASE_USER: artifactory
       JF_SHARED_DATABASE_PASSWORD: password
-      ARTIFACTORY_HOME: /opt/jfrog/artifactory
       ARTIFACTORY_ADMIN_PASSWORD: password
     ports:
       - 8081:8081
