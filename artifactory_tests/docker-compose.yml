@@ -1,11 +1,5 @@
 version: "3.8"
 
-volumes:
-  postgres_data:
-    driver: local
-  artifactory_data:
-    driver: local
-
 networks:
   my_network:
     name: my_network
@@ -20,8 +14,6 @@ services:
       POSTGRES_DB: artifactory
       POSTGRES_USER: artifactory
       POSTGRES_PASSWORD: password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U artifactory"]
       interval: 30s
@@ -33,11 +25,6 @@ services:
         hard: 40000
     networks:
       - my_network
-    logging:
-      driver: json-file
-      options:
-        max-size: "50m"
-        max-file: "10"
 
   artifactory:
     image: releases-docker.jfrog.io/jfrog/artifactory-pro:${ARTIFACTORY_VERSION}
@@ -51,8 +38,6 @@ services:
       JF_SHARED_DATABASE_PASSWORD: password
       ARTIFACTORY_HOME: /opt/jfrog/artifactory
       ARTIFACTORY_ADMIN_PASSWORD: password
-    volumes:
-      - artifactory_data:/var/opt/jfrog/artifactory
     ports:
       - 8081:8081
     depends_on:
@@ -69,11 +54,6 @@ services:
         hard: 40000
     networks:
       - my_network
-    logging:
-      driver: json-file
-      options:
-        max-size: "50m"
-        max-file: "10"
 
   test_runner:
     build:
