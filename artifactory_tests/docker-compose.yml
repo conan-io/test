@@ -3,6 +3,8 @@ services:
     build:
       context: ./artifactory
       dockerfile: Dockerfile
+      args:
+        - artifactory_version=$ARTIFACTORY_VERSION
     environment:
       - JF_ROUTER_ENTRYPOINTS_EXTERNALPORT=8082
     ports:
