@@ -5,6 +5,8 @@ services:
     image: releases-docker.jfrog.io/jfrog/artifactory-pro:${ARTIFACTORY_VERSION}
     environment:
       - JF_ROUTER_ENTRYPOINTS_EXTERNALPORT=8082
+    volumes:
+      - "${ROOT_DATA_DIR}/var:/var/opt/jfrog/artifactory"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/artifactory/api/system/ping"]
       interval: 10s

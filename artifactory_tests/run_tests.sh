@@ -11,6 +11,12 @@ ROOT_DATA_DIR="${CURRENT_DIR}/artifactory_data/${ARTIFACTORY_VERSION}"
 # Create the data directory if it doesn't exist
 mkdir -p "${ROOT_DATA_DIR}"
 
+# Copy system.yaml to the data directory
+cp ./artifactory/system.yaml "${ROOT_DATA_DIR}/var/etc/system.yaml"
+
+# Set ownership to UID 1030 and GID 1030
+chown -R 1030:1030 "${ROOT_DATA_DIR}/var"
+
 # Export ROOT_DATA_DIR for docker-compose
 export ROOT_DATA_DIR
 
