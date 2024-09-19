@@ -6,12 +6,12 @@ set -e
 CURRENT_DIR="$(pwd)"
 
 # Set ROOT_DATA_DIR based on current directory and Artifactory version
-ROOT_DATA_DIR="${CURRENT_DIR}/artifactory_data/${ARTIFACTORY_VERSION}"
+ROOT_DATA_DIR="${CURRENT_DIR}/artifactory_data"
+
+rm -rf "${ROOT_DATA_DIR}"
 
 # Create the data directory and necessary subdirectories
 mkdir -p "${ROOT_DATA_DIR}/var/etc"
-
-ls -la ./artifactory/system.yaml
 
 # Copy system.yaml to the data directory
 cp ./artifactory/system.yaml "${ROOT_DATA_DIR}/var/etc/system.yaml"
@@ -21,7 +21,7 @@ chown -R 1030:1030 "${ROOT_DATA_DIR}/var"
 
 ls -la "${ROOT_DATA_DIR}/var/etc/system.yaml"
 
-chmod -R 777 "${ROOT_DATA_DIR}/var"
+chmod -R 777 "${ROOT_DATA_DIR}"
 
 # Export ROOT_DATA_DIR for docker-compose
 export ROOT_DATA_DIR
