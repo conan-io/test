@@ -2,37 +2,48 @@
 
 set -e
 
-# Delete the existing virtual environment if it exists
+# Remove existing virtual environment if it exists
 if [ -d "tests-env" ]; then
-   echo "Removing existing virtual environment..."
-   rm -rf tests-env
+    echo "Removing existing virtual environment..."
+    rm -rf tests-env
 fi
 
-until curl -v -uadmin:password $ARTIFACTORY_DEFAULT_URL/api/system/ping --fail
+# Wait until Artifactory is ready
+until curl -sSf -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" "$ARTIFACTORY_DEFAULT_URL/api/system/ping" > /dev/null
 do
-   echo "Artifactory not ready... waiting"
-   # curl -v $ARTIFACTORY_DEFAULT_URL/api/system/ping
-   sleep 4
+    echo "Artifactory not ready... waiting"
+    sleep 4
 done
 
 echo "Artifactory responded OK!"
-curl -uadmin:password -XGET $ARTIFACTORY_DEFAULT_URL/api/system/version
-curl -uadmin:password --output /dev/null -XPOST "$ARTIFACTORY_DEFAULT_URL/api/system/licenses" -H "Content-type: application/json" -d "{ \"licenseKey\" : \"$ART_LICENSE\"}"
 
-echo "Let's clone Conan"
-git clone $CONAN_GIT_REPO conan_sources
+# Get Artifactory version
+curl -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" -XGET "$ARTIFACTORY_DEFAULT_URL/api/system/version"
+
+# Apply Artifactory license
+curl -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" --output /dev/null -XPOST "$ARTIFACTORY_DEFAULT_URL/api/system/licenses" \
+     -H "Content-type: application/json" \
+     -d "{ \"licenseKey\" : \"$ART_LICENSE\"}"
+
+# Clone Conan repository
+echo "Cloning Conan repository..."
+git clone "$CONAN_GIT_REPO" conan_sources
 cd conan_sources
-git checkout $CONAN_GIT_TAG
+git checkout "$CONAN_GIT_TAG"
 
-echo "Let's install Conan as editable"
+# Install Conan in editable mode
+echo "Installing Conan in editable mode..."
 python3 -m venv tests-env
 source tests-env/bin/activate
-pip3 install -e . && pip3 install -r conans/requirements_dev.txt && pip3 install -r conans/requirements_server.txt && pip3 install nose
-pip3 list
+pip install --upgrade pip
+pip install -e . 
+pip install -r conans/requirements_dev.txt 
+pip install -r conans/requirements_server.txt 
+pip install nose
+pip list
 
-# in develop we still have tests under conans/test and
-# develop2 has them under test
-echo "Let's run the tests"
+# Run tests
+echo "Running tests..."
 if [ -d "conans/test" ]; then
     pytest conans/test -m "artifactory_ready"
 elif [ -d "test" ]; then

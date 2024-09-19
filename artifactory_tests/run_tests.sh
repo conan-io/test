@@ -2,28 +2,51 @@
 
 set -e
 
-pip install docker-compose
-pip install docker==6.1.3
+# Determine the current directory
+CURRENT_DIR="$(pwd)"
 
-function version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
-min_artifactory_version=6.9.0
-if version_gt $min_artifactory_version $ARTIFACTORY_VERSION; then
-     echo "Artifactory not supported for Conan revisions, exiting ok"
-     exit 0
+# Set ROOT_DATA_DIR based on current directory and Artifactory version
+ROOT_DATA_DIR="${CURRENT_DIR}/artifactory_data/${ARTIFACTORY_VERSION}"
+
+# Create the data directory if it doesn't exist
+mkdir -p "${ROOT_DATA_DIR}"
+
+# Export ROOT_DATA_DIR for docker-compose
+export ROOT_DATA_DIR
+
+# Upgrade pip and install dependencies
+pip install --upgrade pip
+pip install docker-compose
+pip install "docker==6.1.3"
+
+# Function to compare versions
+function version_gt() { 
+    test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"
+}
+
+min_artifactory_version="6.9.0"
+if version_gt "$min_artifactory_version" "$ARTIFACTORY_VERSION"; then
+    echo "Artifactory version $ARTIFACTORY_VERSION does not support Conan revisions, exiting successfully."
+    deactivate
+    exit 0
 fi
 
-
-echo "Building containers..."
+echo "Building Docker containers..."
 docker-compose build
 docker-compose pull
-echo "Launching containers..."
+
+echo "Starting Docker containers..."
 docker-compose up -d
+
+# Run tests
 if docker-compose run test_runner ./launch.sh; then
-    echo "Tests OK!"
+    echo "Tests passed!"
     docker-compose down
+    deactivate
     exit 0
 else
-    echo "Tests Failed!"
+    echo "Tests failed!"
     docker-compose down
+    deactivate
     exit 99
 fi
