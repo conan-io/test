@@ -51,8 +51,8 @@ docker-compose build
 docker-compose pull
 
 echo "Starting Docker containers and running tests..."
-# Run docker-compose up and capture the exit code
-if docker-compose up --abort-on-container-exit; then
+docker-compose up -d
+if docker-compose run test_runner ./launch.sh; then
     echo "Tests passed!"
     docker-compose down
     exit 0
