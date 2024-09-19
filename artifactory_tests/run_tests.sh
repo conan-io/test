@@ -21,7 +21,7 @@ chown -R 1030:1030 "${ROOT_DATA_DIR}/var"
 
 ls -la "${ROOT_DATA_DIR}/var/etc/system.yaml"
 
-#chmod -R 777 "${ROOT_DATA_DIR}/var"
+chmod -R 777 "${ROOT_DATA_DIR}/var"
 
 # Export ROOT_DATA_DIR for docker-compose
 export ROOT_DATA_DIR
