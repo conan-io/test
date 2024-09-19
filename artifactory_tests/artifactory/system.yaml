@@ -1,0 +1,7 @@
+shared:
+  database:
+    allowNonPostgresql: true
+    type: derby
+router:
+  entrypoints:
+    externalPort: 8082

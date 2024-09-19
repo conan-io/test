@@ -1,24 +1,38 @@
-version: "2.1"
-
 services:
   artifactory:
-    #expose:
-    #  - 8090
-    #ports:
-    #  - 8090:8081
-
     build:
       context: ./artifactory
+      dockerfile: Dockerfile
       args:
         - artifactory_version=$ARTIFACTORY_VERSION
+    environment:
+      - JF_ROUTER_ENTRYPOINTS_EXTERNALPORT=8082
+    ports:
+      - "8082:8082"
+      - "8081:8081"
+    networks:
+      - artifactory_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/artifactory/api/system/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   test_runner:
-    command: "/bin/bash"
     build:
-      context: test_runner
+      context: ./test_runner
     depends_on:
       - artifactory
     environment:
-      - CONAN_GIT_REPO=$CONAN_GIT_REPO
-      - CONAN_GIT_TAG=$CONAN_GIT_TAG
-      - ART_LICENSE=$ART_LICENSE
+      - CONAN_GIT_REPO=https://github.com/conan-io/conan.git
+      - CONAN_GIT_TAG=${CONAN_GIT_TAG}
+      - ART_LICENSE=${ART_LICENSE}
+      - ARTIFACTORY_USER=admin
+      - ARTIFACTORY_PASSWORD=password
+      - ARTIFACTORY_DEFAULT_URL=http://artifactory:8081/artifactory
+    networks:
+      - artifactory_network
+
+networks:
+  artifactory_network:
+    driver: bridge

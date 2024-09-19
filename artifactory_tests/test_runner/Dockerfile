@@ -1,10 +1,26 @@
-FROM ubuntu:latest
-RUN apt-get update
-RUN apt-get install -y git python3 python3-pip python3-venv curl subversion
-ADD launch.sh launch.sh
-RUN chmod +x launch.sh
-ENV TESTING_REVISIONS_ENABLED="1"
-ENV CONAN_TEST_WITH_ARTIFACTORY="1"
-ENV ARTIFACTORY_DEFAULT_URL="http://artifactory:8081/artifactory"
-ENV CONAN_GIT_REPO=$CONAN_GIT_REPO
-ENV CONAN_GIT_TAG=$CONAN_GIT_TAG
+FROM python:3.11-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    subversion \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add and make launch.sh executable
+ADD launch.sh /launch.sh
+RUN chmod +x /launch.sh
+
+# Set environment variables
+ENV TESTING_REVISIONS_ENABLED="1" \
+    CONAN_TEST_WITH_ARTIFACTORY="1" \
+    ARTIFACTORY_DEFAULT_URL="http://artifactory:8081/artifactory"
+
+# Set working directory
+WORKDIR /test_runner
+
+# Copy necessary files
+COPY . .
+
+# Set entrypoint
+ENTRYPOINT ["/launch.sh"]
