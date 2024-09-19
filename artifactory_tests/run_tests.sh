@@ -11,11 +11,15 @@ ROOT_DATA_DIR="${CURRENT_DIR}/artifactory_data/${ARTIFACTORY_VERSION}"
 # Create the data directory and necessary subdirectories
 mkdir -p "${ROOT_DATA_DIR}/var/etc"
 
+ls -la ./artifactory/system.yaml
+
 # Copy system.yaml to the data directory
 cp ./artifactory/system.yaml "${ROOT_DATA_DIR}/var/etc/system.yaml"
 
 # Set ownership to UID 1030 and GID 1030
 chown -R 1030:1030 "${ROOT_DATA_DIR}/var"
+
+ls -la "${ROOT_DATA_DIR}/var/etc/system.yaml"
 
 #chmod -R 777 "${ROOT_DATA_DIR}/var"
 
