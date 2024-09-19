@@ -8,6 +8,13 @@ if [ -d "tests-env" ]; then
     rm -rf tests-env
 fi
 
+# Debug: Check hostname resolution
+echo "Resolving hostname 'artifactory'..."
+if ! ping -c 1 artifactory &>/dev/null; then
+    echo "Hostname 'artifactory' cannot be resolved. Exiting."
+    exit 1
+fi
+
 # Wait until Artifactory is ready
 until curl -sSf -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" "$ARTIFACTORY_DEFAULT_URL/api/system/ping" > /dev/null
 do
@@ -23,7 +30,7 @@ curl -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" -XGET "$ARTIFACTORY_DEFAULT_URL
 # Apply Artifactory license
 curl -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" --output /dev/null -XPOST "$ARTIFACTORY_DEFAULT_URL/api/system/licenses" \
      -H "Content-type: application/json" \
-     -d "{ \"licenseKey\" : \"$ART_LICENSE\"}"
+     -d "{ \"licenseKey\" : \"$ART_LICENSE\" }"
 
 # Clone Conan repository
 echo "Cloning Conan repository..."

@@ -3,15 +3,15 @@ version: '3.8'
 services:
   artifactory:
     image: releases-docker.jfrog.io/jfrog/artifactory-pro:${ARTIFACTORY_VERSION}
-    container_name: artifactory
+    hostname: artifactory
     environment:
       - JF_ROUTER_ENTRYPOINTS_EXTERNALPORT=8082
     ports:
-      - "8082:8082" # Router communication
-      - "8081:8081" # Artifactory communication
+      - "8082:8082"
+      - "8081:8081"
     volumes:
       - "${ROOT_DATA_DIR}/var:/var/opt/jfrog/artifactory"
-      - ./artifactory/system.yaml:/opt/jfrog/artifactory/etc/system.yaml # Mount system.yaml
+      - ./artifactory/system.yaml:/opt/jfrog/artifactory/etc/system.yaml
     restart: always
     logging:
       driver: json-file
@@ -25,6 +25,11 @@ services:
         hard: 40000
     networks:
       - artifactory_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/artifactory/api/system/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   test_runner:
     build:
