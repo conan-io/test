@@ -9,7 +9,7 @@ CURRENT_DIR="$(pwd)"
 ROOT_DATA_DIR="${CURRENT_DIR}/artifactory_data/${ARTIFACTORY_VERSION}"
 
 # Create the data directory if it doesn't exist
-mkdir -p "${ROOT_DATA_DIR}"
+mkdir -p "${ROOT_DATA_DIR}/var/etc"
 
 # Copy system.yaml to the data directory
 cp ./artifactory/system.yaml "${ROOT_DATA_DIR}/var/etc/system.yaml"
