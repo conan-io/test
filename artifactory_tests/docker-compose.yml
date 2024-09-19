@@ -22,8 +22,6 @@ services:
       nofile:
         soft: 32000
         hard: 40000
-    networks:
-      - artifactory_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/artifactory/api/system/ping"]
       interval: 10s
@@ -42,9 +40,3 @@ services:
       - ARTIFACTORY_USER=admin
       - ARTIFACTORY_PASSWORD=password
       - ARTIFACTORY_DEFAULT_URL=http://artifactory:8081/artifactory
-    networks:
-      - artifactory_network
-
-networks:
-  artifactory_network:
-    driver: bridge
