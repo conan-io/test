@@ -21,6 +21,8 @@ chown -R 1030:1030 "${ROOT_DATA_DIR}/var"
 
 ls -la "${ROOT_DATA_DIR}/var/etc/system.yaml"
 
+chmod -R 777 "${ROOT_DATA_DIR}"
+
 # Export ROOT_DATA_DIR for docker-compose
 export ROOT_DATA_DIR
 
@@ -45,10 +47,8 @@ docker-compose build
 docker-compose pull
 
 echo "Starting Docker containers and running tests..."
-
-docker-compose up -d
-
-if docker-compose run test_runner ./launch.sh; then
+# Run docker-compose up and capture the exit code
+if docker-compose up --abort-on-container-exit; then
     echo "Tests passed!"
     docker-compose down
     exit 0

@@ -10,6 +10,11 @@ services:
       - "8081:8081" # Artifactory communication
     volumes:
       - "${ROOT_DATA_DIR}/var:/opt/jfrog/artifactory/var"
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
     ulimits:
       nproc: 65535
       nofile:
