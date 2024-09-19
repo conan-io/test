@@ -14,7 +14,7 @@ rm -rf "${ROOT_DATA_DIR}"
 mkdir -p "${ROOT_DATA_DIR}/var/etc"
 
 # Copy system.yaml to the data directory
-cp ./artifactory/system.yaml "${ROOT_DATA_DIR}/var/etc/system.yaml"
+cp ./artifactory/system.yaml "${ROOT_DATA_DIR}/var/etc"
 
 # Set ownership to UID 1030 and GID 1030
 chown -R 1030:1030 "${ROOT_DATA_DIR}/var"
