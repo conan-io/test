@@ -10,12 +10,23 @@ services:
       - "8081:8081" # Artifactory communication
     volumes:
       - "${ROOT_DATA_DIR}/var:/var/opt/jfrog/artifactory"
-      - ./artifactory/system.yaml:/var/opt/jfrog/artifactory/etc/system.yaml
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 32000
+        hard: 40000
+    networks:
+      - artifactory_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/artifactory/api/system/ping"]
       interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 5
 
   test_runner:
     build:
@@ -29,3 +40,9 @@ services:
       - ARTIFACTORY_USER=admin
       - ARTIFACTORY_PASSWORD=password
       - ARTIFACTORY_DEFAULT_URL=http://artifactory:8081/artifactory
+    networks:
+      - artifactory_network
+
+networks:
+  artifactory_network:
+    driver: bridge
