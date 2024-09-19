@@ -1,13 +1,13 @@
-version: '3.8'
-
 services:
   artifactory:
-    image: releases-docker.jfrog.io/jfrog/artifactory-pro:${ARTIFACTORY_VERSION}
+    build:
+      context: ./artifactory
+      dockerfile: Dockerfile
     environment:
       - JF_ROUTER_ENTRYPOINTS_EXTERNALPORT=8082
     ports:
-      - "8082:8082" # Router communication
-      - "8081:8081" # Artifactory communication
+      - "8082:8082"
+      - "8081:8081"
     volumes:
       - "${ROOT_DATA_DIR}/var:/opt/jfrog/artifactory/var"
     logging:
