@@ -9,7 +9,7 @@ services:
       - "8082:8082" # Router communication
       - "8081:8081" # Artifactory communication
     volumes:
-      - "${ROOT_DATA_DIR}/var:/opt/jfrog/artifactory/var"
+      - "${ROOT_DATA_DIR}:/opt/jfrog/artifactory/var"
     logging:
       driver: json-file
       options:
