@@ -1,7 +1,4 @@
 shared:
-  node:
-    # Uncomment and set the IP if necessary
-    # ip: <node ip>
   database:
     allowNonPostgresql: true
     type: derby
