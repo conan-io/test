@@ -58,8 +58,6 @@ if docker-compose up --abort-on-container-exit; then
     exit 0
 else
     echo "Tests failed or Artifactory failed to start."
-    echo "Fetching Artifactory logs..."
-    docker-compose logs artifactory
     docker-compose down
     exit 99
 fi
