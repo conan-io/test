@@ -21,8 +21,6 @@ chown -R 1030:1030 "${ROOT_DATA_DIR}/var"
 
 ls -la "${ROOT_DATA_DIR}/var/etc/system.yaml"
 
-chmod -R 777 "${ROOT_DATA_DIR}"
-
 # Export ROOT_DATA_DIR for docker-compose
 export ROOT_DATA_DIR
 
@@ -39,7 +37,6 @@ function version_gt() {
 min_artifactory_version="6.9.0"
 if version_gt "$min_artifactory_version" "$ARTIFACTORY_VERSION"; then
     echo "Artifactory version $ARTIFACTORY_VERSION does not support Conan revisions, exiting successfully."
-    deactivate || true
     exit 0
 fi
 
@@ -48,17 +45,17 @@ docker-compose build
 docker-compose pull
 
 echo "Starting Docker containers and running tests..."
-# Run docker-compose up and capture the exit code
-if docker-compose up --abort-on-container-exit; then
+
+docker-compose up -d
+
+if docker-compose run test_runner ./launch.sh; then
     echo "Tests passed!"
     docker-compose down
-    deactivate || true
     exit 0
 else
     echo "Tests failed or Artifactory failed to start."
     echo "Fetching Artifactory logs..."
     docker-compose logs artifactory
     docker-compose down
-    deactivate || true
     exit 99
 fi
