@@ -3,16 +3,6 @@ set -e
 
 pip install --upgrade pip
 
-function version_gt() { 
-    test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"
-}
-
-min_artifactory_version="6.9.0"
-if version_gt "$min_artifactory_version" "$ARTIFACTORY_VERSION"; then
-    echo "Artifactory version $ARTIFACTORY_VERSION does not support Conan revisions, exiting successfully."
-    exit 0
-fi
-
 echo "Building Docker containers..."
 docker compose build
 docker compose pull
