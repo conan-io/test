@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-export DOCKER_HOST="unix:///var/run/docker.sock"
-
 pip install --upgrade pip
-pip install docker-compose
-pip install "docker==6.1.3"
 
 function version_gt() { 
     test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"
