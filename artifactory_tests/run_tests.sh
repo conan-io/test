@@ -2,6 +2,8 @@
 
 set -e
 
+export DOCKER_HOST="unix:///var/run/docker.sock"
+
 # Upgrade pip and install dependencies
 pip install --upgrade pip
 pip install docker-compose
