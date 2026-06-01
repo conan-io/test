@@ -18,8 +18,6 @@ done
 
 echo "Artifactory responded OK!"
 
-sleep 30
-
 # Get Artifactory version
 curl -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" -XGET "$ARTIFACTORY_DEFAULT_URL/api/system/version"
 
@@ -27,6 +25,14 @@ curl -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" -XGET "$ARTIFACTORY_DEFAULT_URL
 curl -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" --output /dev/null -XPOST "$ARTIFACTORY_DEFAULT_URL/api/system/licenses" \
      -H "Content-type: application/json" \
      -d "{ \"licenseKey\" : \"$ART_LICENSE\" }"
+
+# Wait for Artifactory to be fully ready after license activation
+until curl -sSf -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" "$ARTIFACTORY_DEFAULT_URL/api/system/ping" > /dev/null
+do
+    echo "Waiting for Artifactory after license activation..."
+    sleep 4
+done
+echo "Artifactory ready after license activation!"
 
 # Clone Conan repository
 echo "Cloning Conan repository..."
