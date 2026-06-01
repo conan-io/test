@@ -18,6 +18,8 @@ done
 
 echo "Artifactory responded OK!"
 
+sleep 30
+
 # Get Artifactory version
 curl -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" -XGET "$ARTIFACTORY_DEFAULT_URL/api/system/version"
 
