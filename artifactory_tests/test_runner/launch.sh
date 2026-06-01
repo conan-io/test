@@ -34,6 +34,23 @@ do
 done
 echo "Artifactory ready after license activation!"
 
+# Verify the Conan API is actually responding (not just the generic ping).
+# Creates a temp Conan repo, polls until auth works (not 503), then deletes it.
+curl -s -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" -XPUT "$ARTIFACTORY_DEFAULT_URL/api/repositories/conan-readiness-probe" \
+     -H "Content-Type: application/json" \
+     -d '{"rclass":"local","packageType":"conan","repoLayoutRef":"conan-default"}' > /dev/null
+
+until [ "$(curl -s -o /dev/null -w '%{http_code}' \
+     -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" \
+     "$ARTIFACTORY_DEFAULT_URL/api/conan/conan-readiness-probe/v2/users/authenticate")" != "503" ]
+do
+    echo "Conan API not ready yet... waiting"
+    sleep 4
+done
+echo "Conan API is ready!"
+
+curl -s -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" -XDELETE "$ARTIFACTORY_DEFAULT_URL/api/repositories/conan-readiness-probe" > /dev/null
+
 # Clone Conan repository
 echo "Cloning Conan repository..."
 git clone "$CONAN_GIT_REPO" conan_sources
