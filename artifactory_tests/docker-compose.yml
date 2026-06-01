@@ -13,7 +13,7 @@ services:
     networks:
       - artifactory_network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/artifactory/api/system/ping"]
+      test: ["CMD", "curl", "-f", "http://localhost:8082/artifactory/api/system/ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -29,7 +29,7 @@ services:
       - ART_LICENSE=${ART_LICENSE}
       - ARTIFACTORY_USER=admin
       - ARTIFACTORY_PASSWORD=password
-      - ARTIFACTORY_DEFAULT_URL=http://artifactory:8081/artifactory
+      - ARTIFACTORY_DEFAULT_URL=http://artifactory:8082/artifactory
     networks:
       - artifactory_network
 
