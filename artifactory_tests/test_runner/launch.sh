@@ -22,7 +22,7 @@ echo "Artifactory responded OK!"
 curl -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" -XGET "$ARTIFACTORY_DEFAULT_URL/api/system/version"
 
 # Apply Artifactory license
-curl -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" --output /dev/null -XPUT "$ARTIFACTORY_DEFAULT_URL/api/system/license" \
+curl -u"$ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD" --output /dev/null -XPOST "$ARTIFACTORY_DEFAULT_URL/api/system/license" \
      -H "Content-type: application/json" \
      -d "{ \"licenseKey\" : \"$ART_LICENSE\" }"
 
