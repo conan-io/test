@@ -34,6 +34,15 @@ do
 done
 echo "Artifactory ready after license activation!"
 
+# Wait for the Access service (handles Conan v2 token authentication)
+ARTIFACTORY_BASE_URL="${ARTIFACTORY_DEFAULT_URL%/artifactory}"
+until curl -sf "${ARTIFACTORY_BASE_URL}/access/api/v1/system/ping" > /dev/null
+do
+    echo "Access service not ready... waiting"
+    sleep 4
+done
+echo "Access service is ready!"
+
 
 # Clone Conan repository
 echo "Cloning Conan repository..."
